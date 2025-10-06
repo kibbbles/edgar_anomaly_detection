@@ -119,6 +119,27 @@
       "name": "The Procter & Gamble Company",
       "cik": "0000080424",
       "sector": "Consumer Goods"
+    },
+    {
+      "ticker": "LK",
+      "name": "Luckin Coffee Inc.",
+      "cik": "0001767582",
+      "sector": "Restaurants/Beverages",
+      "fraud_case": true
+    },
+    {
+      "ticker": "NKLA",
+      "name": "Nikola Corporation",
+      "cik": "0001731289",
+      "sector": "Automotive/Electric Vehicles",
+      "fraud_case": true
+    },
+    {
+      "ticker": "UAA",
+      "name": "Under Armour Inc.",
+      "cik": "0001336917",
+      "sector": "Consumer Goods/Apparel",
+      "fraud_case": true
     }
   ]
 }

@@ -1,11 +1,12 @@
 """
-SEC EDGAR 10-K Scraper
+SEC EDGAR 8-K Scraper
 
-Downloads 10-K filings from SEC EDGAR for specified companies and fiscal years.
+Downloads 8-K filings from SEC EDGAR for specified companies and fiscal years.
+Focuses on critical items: 4.02 (restatements), 5.02 (exec departures), 8.01 (investigations).
 Uses sec-edgar-downloader library which handles rate limiting and filing lookup.
 
 Usage:
-    scraper = Edgar10KScraper()
+    scraper = Edgar8KScraper()
     scraper.download_all_companies()
 """
 
@@ -20,8 +21,8 @@ from sec_edgar_downloader import Downloader
 load_dotenv()
 
 
-class Edgar10KScraper:
-    """Scraper for downloading 10-K filings from SEC EDGAR using sec-edgar-downloader library."""
+class Edgar8KScraper:
+    """Scraper for downloading 8-K filings from SEC EDGAR using sec-edgar-downloader library."""
 
     def __init__(self, data_dir: str = "data/raw"):
         """
@@ -50,7 +51,14 @@ class Edgar10KScraper:
 
     def download_company_filings(self, ticker: str, cik: str, years: List[int]) -> int:
         """
-        Download 10-K filings for a company across multiple years.
+        Download 8-K filings for a company across multiple years.
+
+        8-K filings are event-driven and can occur multiple times per year.
+        We focus on critical items:
+        - Item 4.02: Non-reliance on previously issued financials (restatements)
+        - Item 5.02: Departure of directors or officers
+        - Item 8.01: Other events (investigations, lawsuits)
+        - Item 2.01: Completion of acquisition/disposition
 
         Args:
             ticker: Company ticker symbol (e.g., "AAPL")
@@ -60,19 +68,20 @@ class Edgar10KScraper:
         Returns:
             Number of filings downloaded
         """
-        print(f"Fetching 10-K filings for {ticker} (CIK: {cik})...")
+        print(f"Fetching 8-K filings for {ticker} (CIK: {cik})...")
 
         # Calculate date range for filings
-        # 10-Ks are typically filed within 60-90 days after fiscal year end
-        # So for FY 2020-2024, we look for filings from 2020 to early 2025
+        # 8-Ks are filed within 4 days of material events
+        # Download all 8-Ks in the year range
         after_date = f"{min(years)}-01-01"
         before_date = f"{max(years)+1}-12-31"
 
         try:
-            # Download 10-K filings for this company
-            # The library will download all 10-Ks in the date range
+            # Download 8-K filings for this company
+            # Note: sec-edgar-downloader downloads ALL 8-Ks
+            # We'll filter by Item type in the extraction phase
             num_downloaded = self.downloader.get(
-                "10-K",
+                "8-K",
                 cik,
                 after=after_date,
                 before=before_date,
@@ -92,7 +101,7 @@ class Edgar10KScraper:
         years: List[int] = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
     ) -> Dict[str, int]:
         """
-        Download 10-K filings for all companies in config file.
+        Download 8-K filings for all companies in config file.
 
         Args:
             companies_json_path: Path to companies.json config file
@@ -107,34 +116,39 @@ class Edgar10KScraper:
         companies = config["companies"]
         download_counts = {}
 
-        print(f"Starting download for {len(companies)} companies")
-        print(f"Target fiscal years: {years}")
+        print(f"Starting 8-K download for {len(companies)} companies")
+        print(f"Target years: {years}")
+        print("Focus: Item 4.02 (restatements), 5.02 (exec departures), 8.01 (investigations)")
         print("-" * 60)
 
         for company in companies:
             cik = company["cik"]
             ticker = company["ticker"]
             name = company["name"]
+            is_fraud_case = company.get("fraud_case", False)
 
-            print(f"\n[{ticker}] {name}")
+            fraud_marker = " [FRAUD CASE]" if is_fraud_case else ""
+            print(f"\n[{ticker}] {name}{fraud_marker}")
             count = self.download_company_filings(ticker, cik, years)
             download_counts[ticker] = count
 
         print("\n" + "=" * 60)
-        print(f"Download complete. Total filings: {sum(download_counts.values())}")
+        print(f"Download complete. Total 8-K filings: {sum(download_counts.values())}")
         print("\nFilings by company:")
         for ticker, count in download_counts.items():
             print(f"  {ticker}: {count} filings")
 
         # Save summary
         summary = {
+            "filing_type": "8-K",
             "companies": len(companies),
             "target_years": years,
             "total_filings": sum(download_counts.values()),
-            "by_company": download_counts
+            "by_company": download_counts,
+            "critical_items": ["4.02", "5.02", "8.01", "2.01"]
         }
 
-        summary_path = self.data_dir / "download_summary.json"
+        summary_path = self.data_dir / "download_summary_8k.json"
         with open(summary_path, "w") as f:
             json.dump(summary, f, indent=2)
         print(f"\nDownload summary saved to: {summary_path}")
@@ -143,8 +157,8 @@ class Edgar10KScraper:
 
 
 def main():
-    """Example usage: Download all filings for configured companies."""
-    scraper = Edgar10KScraper()
+    """Example usage: Download all 8-K filings for configured companies."""
+    scraper = Edgar8KScraper()
 
     # Download all companies for 10 years (2015-2024)
     scraper.download_all_companies(
