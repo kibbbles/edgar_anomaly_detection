@@ -104,6 +104,7 @@ pip install -r requirements.txt
 
 **Current Data Holdings (1993-2024):**
 - 31 years of historical SEC EDGAR filings
+- **Total Size:** ~51 GB of data
 - Located in `data/external/` (downloaded archives)
 - Includes both 10-K annual reports and 10-Q quarterly filings
 
