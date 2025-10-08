@@ -57,3 +57,6 @@ logs/
 # Proprietary/sensitive documents
 ttb_cola_pilot_proposal.txt
 scraping_sec_filings_part1.txt
+
+# Research/planning notes
+resources/

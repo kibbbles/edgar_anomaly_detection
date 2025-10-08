@@ -1,29 +1,27 @@
-# SEC EDGAR Fraud Detection - 10-K & 8-K Analysis
+# SEC EDGAR Fraud Detection - 10-K/10-Q Analysis
 
-AI-powered fraud detection system analyzing SEC EDGAR filings to identify anomalies in 10-K Risk Factors (Item 1A) and critical 8-K event disclosures.
+AI-powered fraud detection system analyzing SEC EDGAR filings to identify anomalies in 10-K Risk Factors (Item 1A) and quarterly disclosures.
 
 ## Project Scope
 - **Companies:** 23 (20 clean baseline + 3 known fraud cases)
-- **Time Period:** 10 years (2015-2024)
-- **Total Filings:** 4,194 (230 × 10-K, 3,964 × 8-K)
-- **Fraud Cases:** Under Armour, Luckin Coffee, Nikola Corporation
+- **Time Period:** 30+ years (1993-2024) via SRAF dataset
+- **Primary Data Source:** Notre Dame SRAF 10-X Cleaned Files (1993-2024)
+- **Supplementary Data:** Self-scraped 8-K filings (3,964 filings, 2015-2024)
+- **Fraud Cases:** Under Armour, Nikola Corporation (Luckin Coffee - insufficient data)
 
 ## Objective
 Build a machine learning model to detect early warning signs of corporate fraud by analyzing:
 1. **10-K Item 1A (Risk Factors):** Year-over-year changes, boilerplate vs. substantive disclosures
-2. **8-K Critical Items:**
-   - Item 4.02: Financial restatements (primary fraud indicator)
-   - Item 5.02: Executive departures (governance red flags)
-   - Item 8.01: Investigations, lawsuits (regulatory issues)
-   - Item 2.01: Acquisitions/dispositions
+2. **10-Q Quarterly Filings:** Trend analysis, MD&A changes
+3. **Optional 8-K Analysis:** Event-driven anomalies (if time permits)
 
 ## Features
-- Download 10-K and 8-K filings from SEC EDGAR API
-- Extract specific sections (Item 1A from 10-Ks, Items 4.02/5.02/8.01/2.01 from 8-Ks)
-- YoY risk factor change detection using NLP
-- Fraud probability scoring based on 8-K anomaly patterns
+- Extract Item 1A from 10-K filings (SRAF cleaned text format)
+- YoY risk factor change detection using NLP (semantic similarity)
+- Boilerplate vs. substantive disclosure scoring
+- Quarterly trend analysis from 10-Q filings
 - Interactive dashboard for analysis
-- Validation on known fraud cases (UAA 2015-2017, NKLA 2019-2020, LK 2019-2020)
+- Validation on known fraud cases (Under Armour 2015-2017, Nikola 2019-2020)
 
 ## Setup
 
@@ -38,16 +36,25 @@ Create a `.env` file with your SEC API user agent:
 SEC_USER_AGENT=YourName your.email@company.com
 ```
 
-### 3. Run Data Collection
-```bash
-# Download 10-K filings (230 total)
-python src/data/edgar_10k_scraper.py
+### 3. Data Collection
 
-# Download 8-K filings (3,964 total)
+**Primary Source: Notre Dame SRAF Dataset**
+1. Download 10-X cleaned files from https://sraf.nd.edu/sec-edgar-data/
+2. Extract to `data/external/sraf/`
+3. Files organized by year/quarter: `YYYY/QTRX/YYYYMMDD_FORM_*.txt`
+
+**Supplementary Data (Optional):**
+```bash
+# Self-scraped 8-K filings (if needed for event analysis)
 python src/data/edgar_8k_scraper.py
 ```
 
-This will download filings for 23 companies (2015-2024) to `data/raw/sec-edgar-filings/`.
+**Current Data Status:**
+- ✅ SRAF 2016-2020: Downloaded (7.8 GB)
+- 🔄 SRAF 2006-2015: Downloading
+- 🔄 SRAF 2021-2024: Downloading
+- ✅ Self-scraped 8-K (2015-2024): 3,964 filings in `data/raw/sec-edgar-filings/`
+- ✅ Self-scraped 10-K (2015-2024): 230 filings in `data/raw/sec-edgar-filings/` (backup)
 
 ## Project Structure
 ```
@@ -86,9 +93,17 @@ edgar_anomaly_detection/
 │   └── streamlit_app.py               # (TBD) Interactive UI
 │
 ├── data/                              # Excluded from Git
-│   ├── raw/                           # 4,194 downloaded filings (~2-3 GB)
-│   ├── processed/                     # Extracted sections
-│   ├── external/                      # Optional Kaggle datasets
+│   ├── raw/                           # Self-scraped filings (backup/supplement)
+│   │   └── sec-edgar-filings/         # 4,194 filings: 230 × 10-K, 3,964 × 8-K
+│   ├── external/                      # External datasets
+│   │   └── sraf/                      # Notre Dame 10-X files (PRIMARY SOURCE)
+│   │       ├── 10-X_C_2006-2015.zip
+│   │       ├── 10-X_C_2016-2020.zip   # ✅ Downloaded
+│   │       ├── 10-X_C_2021.zip
+│   │       ├── 10-X_C_2022.zip
+│   │       ├── 10-X_C_2023.zip
+│   │       └── 10-X_C_2024.zip
+│   ├── processed/                     # Extracted Item 1A sections
 │   └── reports/                       # Analysis outputs
 │
 └── tests/
@@ -211,11 +226,30 @@ data/raw/sec-edgar-filings/
 - **Dashboard:** `streamlit`
 - **Storage:** JSON, Parquet
 
-## External Datasets (Optional)
-Explored Kaggle/SRAF datasets for supplementary financial metrics:
-- ❌ **None include 8-K filings** (critical for fraud detection)
-- ✅ **Keep scraped data as primary source**
-- Optional: Download to `data/external/` for balance sheet/income statement enrichment
+## External Datasets Evaluation
+
+**Evaluated 4 datasets** (see `external_datasets_evaluation.xlsx` for full analysis):
+
+1. **✅ Notre Dame SRAF 10-X Files (PRIMARY SOURCE)**
+   - Full 10-K/10-Q text (1993-2024)
+   - Has Item 1A Risk Factors text
+   - Cleaned .txt format, organized by year/quarter
+   - **Decision:** Use as primary source for 10-K/10-Q analysis
+
+2. **❌ Kaggle - SEC EDGAR Company Facts (Lang)**
+   - 13.86 GB of structured XBRL financial line items only
+   - No narrative text sections
+   - **Decision:** Skip
+
+3. **❌ Kaggle - Parsed 10-Q Filings (Aenlle)**
+   - Quarterly financial metrics only
+   - **Decision:** Skip
+
+4. **❌ Kaggle - Company Facts v2 (Vanak)**
+   - 75.4M rows of numerical metrics
+   - **Decision:** Skip
+
+**Key Finding:** All Kaggle datasets contain only structured financial numbers (XBRL). SRAF dataset is the only source with full filing text needed for NLP fraud detection.
 
 ## References
 - **SEC EDGAR API:** https://www.sec.gov/edgar/sec-api-documentation
@@ -225,5 +259,11 @@ Explored Kaggle/SRAF datasets for supplementary financial metrics:
 
 ---
 
-**Last Updated:** October 6, 2025
-**Status:** Phase 1 Complete (Data Collection) → Starting Phase 2 (Text Extraction)
+**Last Updated:** October 7, 2025
+**Status:** Phase 1 Complete (Data Collection & Evaluation) → Phase 2 Starting (SRAF Download & Text Extraction)
+
+**Recent Updates:**
+- Evaluated 4 external datasets (3 Kaggle + 1 SRAF)
+- Selected Notre Dame SRAF as primary source for 10-K/10-Q text
+- Downloading SRAF files: 2006-2015, 2021-2024 (2016-2020 complete)
+- Updated project scope: Focus on 10-K/10-Q, keep 8-K as supplementary
