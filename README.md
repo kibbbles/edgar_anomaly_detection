@@ -8,8 +8,8 @@ AI-powered system for analyzing SEC 10-K and 10-Q filings using RAPTOR RAG (Recu
 
 **Data Sources:**
 - **Primary:** Downloaded 10-K and 10-Q filings (1993-2024)
-- **Coverage:** 31 years of SEC EDGAR filings
-- **Target Sections:** Item 1A (Risk Factors), MD&A, and other disclosure sections
+- **Coverage:** 31 years of SEC EDGAR filings (~51 GB)
+- **Scope:** Complete filings (all sections processed)
 
 **Infrastructure:**
 - **Deployment:** AWS EC2 instance with GPU
@@ -192,7 +192,7 @@ edgar_anomaly_detection/
 
 ### Phase 2: Data Processing Pipeline (Week 2)
 - [ ] Extract filings from ZIP archives
-- [ ] Parse 10-K/10-Q HTML/XML to extract Item 1A and other sections
+- [ ] Parse 10-K/10-Q HTML/XML to extract complete filing text
 - [ ] Implement document chunking (2000 token chunks with tiktoken)
 - [ ] Generate embeddings using local Sentence Transformers
 - [ ] Store structured data (chunks + metadata) in JSON/Parquet

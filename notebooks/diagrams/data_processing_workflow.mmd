@@ -13,7 +13,7 @@ sequenceDiagram
     Extractor->>Extractor: Unzip and extract filings
     Extractor->>Parser: Send raw HTML/XML
 
-    Parser->>Parser: Parse Item 1A (Risk Factors)
+    Parser->>Parser: Parse complete filing text
     Parser->>Parser: Clean and normalize text
     Parser->>Parser: Chunk into 2000 token segments
     Parser->>Storage: Save chunks as JSON/Parquet
