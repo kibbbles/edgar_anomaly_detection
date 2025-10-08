@@ -1,27 +1,88 @@
-# SEC EDGAR Fraud Detection - 10-K/10-Q Analysis
+# SEC EDGAR Risk Factor Analysis - RAPTOR RAG System
 
-AI-powered fraud detection system analyzing SEC EDGAR filings to identify anomalies in 10-K Risk Factors (Item 1A) and quarterly disclosures.
+AI-powered system for analyzing SEC 10-K and 10-Q filings using RAPTOR RAG (Recursive Adaptive Processing and Topical Organizational Retrieval). The system creates an enhanced knowledge base from financial filings that users can query interactively to identify year-over-year changes, risk patterns, and potential anomalies.
 
-## Project Scope
-- **Companies:** 23 (20 clean baseline + 3 known fraud cases)
-- **Time Period:** 30+ years (1993-2024) via SRAF dataset
-- **Primary Data Source:** Notre Dame SRAF 10-X Cleaned Files (1993-2024)
-- **Supplementary Data:** Self-scraped 8-K filings (3,964 filings, 2015-2024)
-- **Fraud Cases:** Under Armour, Nikola Corporation (Luckin Coffee - insufficient data)
+## Project Overview
 
-## Objective
-Build a machine learning model to detect early warning signs of corporate fraud by analyzing:
-1. **10-K Item 1A (Risk Factors):** Year-over-year changes, boilerplate vs. substantive disclosures
-2. **10-Q Quarterly Filings:** Trend analysis, MD&A changes
-3. **Optional 8-K Analysis:** Event-driven anomalies (if time permits)
+**Core Technology:** RAPTOR RAG with hierarchical clustering and multi-level summarization
 
-## Features
-- Extract Item 1A from 10-K filings (SRAF cleaned text format)
-- YoY risk factor change detection using NLP (semantic similarity)
-- Boilerplate vs. substantive disclosure scoring
-- Quarterly trend analysis from 10-Q filings
-- Interactive dashboard for analysis
-- Validation on known fraud cases (Under Armour 2015-2017, Nikola 2019-2020)
+**Data Sources:**
+- **Primary:** Downloaded ZIP archives of 10-K and 10-Q filings
+- **Scope:** Multiple companies across multiple years
+- **Target Sections:** Item 1A (Risk Factors), MD&A, and other disclosure sections
+
+**Infrastructure:**
+- **Deployment:** AWS EC2 instance with GPU
+- **Model Hosting:** Ollama for local LLM deployment
+- **User Interface:** Open WebUI for interactive queries
+- **Storage:** Cloud-based vector embeddings and knowledge base
+
+## Key Features
+
+- **Hierarchical Document Processing:** Multi-level clustering (UMAP + GMM) organizes content into coherent themes
+- **Recursive Summarization:** 3-level hierarchical summaries capture both granular details and high-level concepts
+- **Enhanced Retrieval:** Cluster-aware context retrieval provides richer information for LLM queries
+- **Interactive Querying:** Users can ask arbitrary questions about filings via Open WebUI
+- **YoY Analysis:** Semantic understanding of year-over-year changes without manual feature engineering
+- **Boilerplate Detection:** Clustering naturally groups repetitive language patterns
+
+## Architecture
+
+```mermaid
+graph TB
+    subgraph "Data Sources"
+        A[SEC EDGAR API]
+        B[Downloaded ZIP Files<br/>10-K/10-Q Filings]
+    end
+
+    subgraph "AWS EC2 Instance with GPU"
+        C[Filing Extractor]
+        D[Text Processor<br/>Chunking & Cleaning]
+        E[RAPTOR System]
+        F[Embedding Generator<br/>Sentence Transformers]
+        G[Knowledge Base<br/>ChromaDB]
+        H[Ollama LLM<br/>FinGPT Model]
+        I[Open WebUI]
+    end
+
+    subgraph "Storage"
+        J[(Processed Data<br/>JSON/Parquet)]
+        K[(Vector Embeddings)]
+    end
+
+    B -->|Extract| C
+    C -->|Parse HTML/XML| D
+    D -->|Chunks + Metadata| F
+    F -->|Generate Embeddings| E
+    E -->|Hierarchical Clustering<br/>& Summarization| G
+    G -->|Store| K
+    D -->|Store| J
+
+    I -->|User Query| G
+    G -->|Relevant Chunks<br/>+ Summaries| H
+    H -->|Generate Response| I
+
+    style E fill:#ff9800,stroke:#f57c00,stroke-width:3px
+    style H fill:#4caf50,stroke:#388e3c,stroke-width:2px
+    style I fill:#2196f3,stroke:#1976d2,stroke-width:2px
+```
+
+## RAPTOR vs Traditional RAG
+
+| Feature | Traditional RAG | RAPTOR RAG |
+|---------|----------------|------------|
+| Text Processing | Simple chunking | Recursive, hierarchical |
+| Clustering | None or basic | Multi-level (global + local) |
+| Summarization | None or single-level | Recursive, 3-level |
+| Context Selection | Similarity-based only | Cluster-aware + similarity |
+| Document Understanding | Flat representation | Hierarchical representation |
+| Knowledge Integration | Direct chunks only | Chunks + multi-level summaries |
+
+**Why RAPTOR for Financial Filings?**
+- Financial documents have hierarchical structure (sections, subsections, themes)
+- YoY analysis requires understanding both granular changes and high-level shifts
+- Boilerplate detection benefits from cluster analysis (repetitive language clusters together)
+- Complex queries need multi-level context (e.g., "How did cyber risk disclosures evolve?")
 
 ## Setup
 
@@ -30,240 +91,189 @@ Build a machine learning model to detect early warning signs of corporate fraud 
 pip install -r requirements.txt
 ```
 
-### 2. Configure SEC API Access
-Create a `.env` file with your SEC API user agent:
+**Key Libraries:**
+- `langchain`, `langchain_community` - LLM orchestration
+- `sentence-transformers` - Local embeddings
+- `umap-learn` - Dimensionality reduction
+- `scikit-learn` - Clustering algorithms (GMM)
+- `pandas`, `numpy` - Data manipulation
+- `chromadb` - Vector storage
+- `ollama` - Local LLM serving
+
+### 2. Data Preparation
+
+Place your downloaded 10-K/10-Q ZIP files in `data/raw/`:
+
 ```
-SEC_USER_AGENT=YourName your.email@company.com
+data/raw/
+├── company1_10k_filings.zip
+├── company2_10k_filings.zip
+└── ...
 ```
 
-### 3. Data Collection
+### 3. Run Processing Pipeline
 
-**Primary Source: Notre Dame SRAF Dataset**
-1. Download 10-X cleaned files from https://sraf.nd.edu/sec-edgar-data/
-2. Extract to `data/external/sraf/`
-3. Files organized by year/quarter: `YYYY/QTRX/YYYYMMDD_FORM_*.txt`
-
-**Supplementary Data (Optional):**
 ```bash
-# Self-scraped 8-K filings (if needed for event analysis)
-python src/data/edgar_8k_scraper.py
+# Extract and process filings
+python src/data/filing_extractor.py
+
+# Generate embeddings and build RAPTOR knowledge base
+python src/pipeline/knowledge_base_builder.py
 ```
 
-**Current Data Status:**
-- ✅ SRAF 2016-2020: Downloaded (7.8 GB)
-- 🔄 SRAF 2006-2015: Downloading
-- 🔄 SRAF 2021-2024: Downloading
-- ✅ Self-scraped 8-K (2015-2024): 3,964 filings in `data/raw/sec-edgar-filings/`
-- ✅ Self-scraped 10-K (2015-2024): 230 filings in `data/raw/sec-edgar-filings/` (backup)
+### 4. Deploy on EC2 (Production)
+
+```bash
+# Set up Ollama with FinGPT model
+ollama pull <fingpt-model>
+
+# Deploy Open WebUI
+docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway \
+  -v open-webui:/app/backend/data --name open-webui --restart always \
+  ghcr.io/open-webui/open-webui:main
+```
 
 ## Project Structure
+
 ```
 edgar_anomaly_detection/
 ├── README.md
 ├── CLAUDE.md                          # Development guidelines
 ├── requirements.txt
 ├── .gitignore
-├── .env
 │
 ├── config/
-│   └── companies.json                 # 23 companies (including fraud cases)
+│   └── companies.json                 # Company configuration
 │
 ├── notebooks/
-│   └── 01_data_collection_summary.ipynb  # ✅ Technical documentation
+│   ├── 01_project_plan.ipynb          # ✅ Comprehensive project plan with diagrams
+│   ├── 02_data_collection_summary.ipynb
+│   └── 03_raptor_testing.ipynb        # (TBD) RAPTOR validation
 │
 ├── src/
 │   ├── data/
-│   │   ├── edgar_10k_scraper.py       # ✅ Download 10-K filings
-│   │   ├── edgar_8k_scraper.py        # ✅ Download 8-K filings
-│   │   ├── risk_extractor.py          # (TBD) Extract Item 1A sections
-│   │   └── item_8k_extractor.py       # (TBD) Extract 8-K Items 4.02, 5.02, 8.01
+│   │   ├── filing_extractor.py        # (TBD) Unzip and parse filings
+│   │   └── text_processor.py          # (TBD) Chunking and cleaning
 │   │
 │   ├── models/
-│   │   ├── risk_comparator.py         # (TBD) YoY risk factor comparison
-│   │   ├── risk_classifier.py         # (TBD) Risk categorization
-│   │   └── fraud_detector.py          # (TBD) 8-K anomaly scoring
+│   │   ├── raptor.py                  # (TBD) Main RAPTOR class
+│   │   ├── embedding_generator.py     # (TBD) Sentence Transformer embeddings
+│   │   └── clustering.py              # (TBD) UMAP + GMM clustering
 │   │
 │   ├── pipeline/
-│   │   └── analysis_pipeline.py       # (TBD) End-to-end orchestration
+│   │   └── knowledge_base_builder.py  # (TBD) End-to-end RAPTOR pipeline
 │   │
 │   └── analysis/
-│       └── report_generator.py        # (TBD) Generate fraud reports
+│       └── query_handler.py           # (TBD) Process Open WebUI queries
 │
 ├── dashboard/
-│   └── streamlit_app.py               # (TBD) Interactive UI
+│   └── README.md                      # Open WebUI setup instructions
 │
-├── data/                              # Excluded from Git
-│   ├── raw/                           # Self-scraped filings (backup/supplement)
-│   │   └── sec-edgar-filings/         # 4,194 filings: 230 × 10-K, 3,964 × 8-K
-│   ├── external/                      # External datasets
-│   │   └── sraf/                      # Notre Dame 10-X files (PRIMARY SOURCE)
-│   │       ├── 10-X_C_2006-2015.zip
-│   │       ├── 10-X_C_2016-2020.zip   # ✅ Downloaded
-│   │       ├── 10-X_C_2021.zip
-│   │       ├── 10-X_C_2022.zip
-│   │       ├── 10-X_C_2023.zip
-│   │       └── 10-X_C_2024.zip
-│   ├── processed/                     # Extracted Item 1A sections
-│   └── reports/                       # Analysis outputs
-│
-└── tests/
-    └── (TBD)
+└── data/                              # Excluded from Git
+    ├── raw/                           # ZIP files of downloaded filings
+    ├── processed/                     # Extracted, chunked text
+    ├── embeddings/                    # Generated vector embeddings
+    └── knowledge_base/                # RAPTOR hierarchical knowledge base
 ```
 
-## Current Status
+## Implementation Phases
 
-### ✅ Completed (Week 1)
-- [x] Project setup
-- [x] Company selection (23 companies, 3 fraud cases)
-- [x] 10-K scraper implemented (`edgar_10k_scraper.py`)
-- [x] 8-K scraper implemented (`edgar_8k_scraper.py`)
-- [x] Downloaded **230 × 10-K filings** (2015-2024)
-- [x] Downloaded **3,964 × 8-K filings** (2015-2024)
-- [x] Validated fraud case coverage
-- [x] Documentation notebook created
+### Phase 1: Model Research & Setup (Week 1)
+- [x] Research FinGPT models on Hugging Face
+- [x] Create project plan with mermaid diagrams
+- [ ] Select model compatible with Ollama deployment
+- [ ] Set up project structure
+- [ ] Create base `Raptor` class skeleton
 
-### 📋 To-Do (Week 2-4)
+### Phase 2: Data Processing Pipeline (Week 2)
+- [ ] Extract filings from ZIP archives
+- [ ] Parse 10-K/10-Q HTML/XML to extract Item 1A and other sections
+- [ ] Implement document chunking (2000 token chunks with tiktoken)
+- [ ] Generate embeddings using local Sentence Transformers
+- [ ] Store structured data (chunks + metadata) in JSON/Parquet
 
-**Week 2: Text Extraction**
-- [ ] Build 10-K Item 1A extractor
-- [ ] Build 8-K Item extractor (4.02, 5.02, 8.01, 2.01)
-- [ ] Validate extraction on 10 sample filings
-- [ ] Store extracted text in `data/processed/`
+### Phase 3: RAPTOR System Implementation (Week 3)
+- [ ] Implement hierarchical clustering (global + local UMAP + GMM)
+- [ ] Build recursive summarization engine (3 levels deep)
+- [ ] Create enhanced knowledge base (original chunks + L1/L2/L3 summaries)
+- [ ] Implement cluster-aware retrieval mechanism
+- [ ] Test on sample filings
 
-**Week 3: Feature Engineering**
-- [ ] YoY risk factor change detection (semantic similarity)
-- [ ] Boilerplate vs. substantive scoring
-- [ ] 8-K anomaly features (frequency, clustering, sentiment)
-
-**Week 4: Modeling & Dashboard**
-- [ ] Train fraud detection model
-- [ ] Validate on UAA, NKLA, LK
-- [ ] Build Streamlit dashboard
-
-## Download Summary
-
-### 10-K Filings (Annual Reports)
-- **Total:** 230 filings
-- **Coverage:** 23 companies × ~10 years each
-- **Fraud Cases:**
-  - Under Armour (UAA): 11 filings
-  - Nikola (NKLA): 6 filings
-  - Luckin Coffee (LK): 0 filings (delisted)
-
-### 8-K Filings (Event Disclosures)
-- **Total:** 3,964 filings
-- **Coverage:** 2015-2024
-- **Fraud Cases:**
-  - Under Armour (UAA): 141 filings
-  - Nikola (NKLA): 118 filings
-  - Luckin Coffee (LK): 0 filings (delisted)
-- **Highest Volume:** Wells Fargo (869 filings - 2016 scandal)
-
-## Fraud Cases
-
-### 1. Under Armour (UAA)
-- **Fraud Period:** 2015-2017
-- **Type:** Accounting fraud (revenue manipulation via "pull-forward" sales)
-- **SEC Settlement:** 2021 ($9M penalty)
-- **Coverage:** ✅ 11 × 10-K, 141 × 8-K
-
-### 2. Luckin Coffee (LK)
-- **Fraud Period:** 2019-2020
-- **Type:** Accounting fraud (fabricated sales ~$300M)
-- **Exposed:** April 2020
-- **Coverage:** ❌ 0 filings (delisted before 2015, not in SEC database)
-
-### 3. Nikola Corporation (NKLA)
-- **Fraud Period:** 2019-2020
-- **Type:** Securities fraud (false product claims, Trevor Milton)
-- **Exposed:** September 2020
-- **Coverage:** ✅ 6 × 10-K, 118 × 8-K
-
-## Usage
-
-### Download Filings
-```python
-from src.data.edgar_10k_scraper import Edgar10KScraper
-from src.data.edgar_8k_scraper import Edgar8KScraper
-
-# Download 10-K filings
-scraper_10k = Edgar10KScraper()
-scraper_10k.download_all_companies(
-    companies_json_path="config/companies.json",
-    years=[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
-)
-
-# Download 8-K filings
-scraper_8k = Edgar8KScraper()
-scraper_8k.download_all_companies(
-    companies_json_path="config/companies.json",
-    years=[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
-)
-```
-
-### Explore Data
-See `notebooks/01_data_collection_summary.ipynb` for detailed analysis.
-
-## File Structure (Downloaded Data)
-```
-data/raw/sec-edgar-filings/
-├── {CIK}/                          # e.g., 0001336917 (Under Armour)
-│   ├── 10-K/
-│   │   └── {ACCESSION}/            # e.g., 0001336917-17-000032
-│   │       ├── full-submission.txt # Complete filing
-│   │       └── primary-document.html
-│   └── 8-K/
-│       └── {ACCESSION}/
-│           ├── full-submission.txt
-│           └── primary-document.html
-```
+### Phase 4: LLM Integration & Deployment (Week 4)
+- [ ] Set up Ollama on EC2 instance with selected FinGPT model
+- [ ] Deploy Open WebUI for user interaction
+- [ ] Integrate RAPTOR knowledge base with LLM query system
+- [ ] Create sample query templates (YoY changes, risk classification, etc.)
+- [ ] Documentation and user guide
 
 ## Technical Stack
-- **Python 3.10+**
-- **Data Collection:** `sec-edgar-downloader` (rate limiting, SEC API wrapper)
-- **NLP:** `sentence-transformers`, `transformers`, `scikit-learn`
-- **Data Processing:** `pandas`, `numpy`
-- **Dashboard:** `streamlit`
-- **Storage:** JSON, Parquet
 
-## External Datasets Evaluation
+**NLP & ML:**
+- Base Model: FinGPT (Hugging Face compatible) or alternative financial LLM
+- Embeddings: Sentence Transformers (`all-MiniLM-L6-v2`) for local, cost-free generation
+- Clustering: UMAP (dimensionality reduction) + scikit-learn GMM
+- LLM Interface: Ollama (local) or OpenAI API (testing/comparison)
 
-**Evaluated 4 datasets** (see `external_datasets_evaluation.xlsx` for full analysis):
+**Data Processing:**
+- Chunking: LangChain `RecursiveCharacterTextSplitter` (~2000 tokens/chunk)
+- Vector Storage: ChromaDB for efficient retrieval
+- Data Format: JSON/Parquet for structured storage
 
-1. **✅ Notre Dame SRAF 10-X Files (PRIMARY SOURCE)**
-   - Full 10-K/10-Q text (1993-2024)
-   - Has Item 1A Risk Factors text
-   - Cleaned .txt format, organized by year/quarter
-   - **Decision:** Use as primary source for 10-K/10-Q analysis
+**Infrastructure:**
+- Deployment: AWS EC2 with GPU
+- Model Serving: Ollama
+- User Interface: Open WebUI
+- Storage: Cloud-based (S3 or EBS volumes)
 
-2. **❌ Kaggle - SEC EDGAR Company Facts (Lang)**
-   - 13.86 GB of structured XBRL financial line items only
-   - No narrative text sections
-   - **Decision:** Skip
+## Key Advantages of RAPTOR Approach
 
-3. **❌ Kaggle - Parsed 10-Q Filings (Aenlle)**
-   - Quarterly financial metrics only
-   - **Decision:** Skip
+1. **No Manual Feature Engineering:** LLM infers patterns from enhanced context (vs. building YoY diff algorithms)
+2. **Flexible Queries:** Users can ask arbitrary questions beyond predefined analyses
+3. **Semantic Understanding:** Detects substantive changes even when wording differs
+4. **Scalable:** Adding new filings just requires re-running RAPTOR pipeline
+5. **Explainable:** LLM can cite specific sections supporting its conclusions
+6. **Hierarchical Context:** Captures both high-level themes and granular details
 
-4. **❌ Kaggle - Company Facts v2 (Vanak)**
-   - 75.4M rows of numerical metrics
-   - **Decision:** Skip
+## Success Metrics
 
-**Key Finding:** All Kaggle datasets contain only structured financial numbers (XBRL). SRAF dataset is the only source with full filing text needed for NLP fraud detection.
+- [ ] Successfully process 90%+ of downloaded filings into knowledge base
+- [ ] Clustering produces coherent, interpretable groups
+- [ ] Generated summaries accurately capture document content at each level
+- [ ] LLM queries return relevant, accurate responses with supporting evidence
+- [ ] System responds to queries in <10 seconds (including retrieval + generation)
+- [ ] Manual validation: Test 10 YoY comparison queries, verify accuracy
+
+## Example Queries
+
+Once deployed, users can ask questions like:
+
+- "What new cyber security risks did Company X disclose in 2023 compared to 2022?"
+- "Which companies mention supply chain risks most frequently?"
+- "Show me boilerplate language vs. substantive disclosures in risk factors"
+- "How have pandemic-related risks evolved from 2020 to 2024?"
+- "Compare regulatory risk disclosures between financial sector companies"
+
+## Documentation
+
+- **Project Plan:** See `notebooks/01_project_plan.ipynb` for comprehensive technical architecture with mermaid diagrams
+- **Data Collection:** See `notebooks/02_data_collection_summary.ipynb` for filing download status
+- **Development Guidelines:** See `CLAUDE.md` for coding standards and workflow
 
 ## References
+
+- **FinGPT Documentation:** https://deepwiki.com/AI4Finance-Foundation/FinGPT/
+- **RAPTOR RAG System:** https://deepwiki.com/AI4Finance-Foundation/FinGPT/5.1-raptor-rag-system
 - **SEC EDGAR API:** https://www.sec.gov/edgar/sec-api-documentation
-- **Under Armour SEC Charges:** https://www.sec.gov/newsroom/press-releases/2021-78
-- **Luckin Coffee Settlement:** https://www.sec.gov/newsroom/press-releases/2020-319
-- **Nikola/Trevor Milton Indictment:** https://www.sec.gov/newsroom/press-releases/2021-141
+- **Ollama:** https://ollama.ai/
+- **Open WebUI:** https://github.com/open-webui/open-webui
 
 ---
 
-**Last Updated:** October 7, 2025
-**Status:** Phase 1 Complete (Data Collection & Evaluation) → Phase 2 Starting (SRAF Download & Text Extraction)
+**Last Updated:** October 8, 2025
+**Status:** Phase 1 (Planning & Architecture) → Starting Phase 2 (Data Processing)
 
 **Recent Updates:**
-- Evaluated 4 external datasets (3 Kaggle + 1 SRAF)
-- Selected Notre Dame SRAF as primary source for 10-K/10-Q text
-- Downloading SRAF files: 2006-2015, 2021-2024 (2016-2020 complete)
-- Updated project scope: Focus on 10-K/10-Q, keep 8-K as supplementary
+- Created comprehensive project plan with 3 mermaid diagrams (architecture, RAPTOR pipeline, data workflow)
+- Documented RAPTOR RAG approach for hierarchical document processing
+- Specified EC2 GPU infrastructure with Ollama and Open WebUI
+- Defined 4-phase implementation roadmap
