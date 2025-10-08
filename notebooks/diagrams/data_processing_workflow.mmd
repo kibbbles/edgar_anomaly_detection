@@ -1,0 +1,39 @@
+sequenceDiagram
+    participant User
+    participant FileSystem as File System<br/>(ZIP Archives)
+    participant Extractor as Filing Extractor
+    participant Parser as Text Processor
+    participant Embedder as Embedding Generator
+    participant RAPTOR as RAPTOR Engine
+    participant KB as Knowledge Base
+    participant Storage as Cloud Storage
+
+    User->>FileSystem: Access ZIP files
+    FileSystem->>Extractor: Read 10-K/10-Q archives
+    Extractor->>Extractor: Unzip and extract filings
+    Extractor->>Parser: Send raw HTML/XML
+
+    Parser->>Parser: Parse Item 1A (Risk Factors)
+    Parser->>Parser: Clean and normalize text
+    Parser->>Parser: Chunk into 2000 token segments
+    Parser->>Storage: Save chunks as JSON/Parquet
+
+    Parser->>Embedder: Send text chunks
+    Embedder->>Embedder: Generate embeddings<br/>(Sentence Transformers)
+
+    Embedder->>RAPTOR: Send chunks + embeddings
+
+    RAPTOR->>RAPTOR: Global clustering (UMAP + GMM)
+    RAPTOR->>RAPTOR: Local clustering refinement
+    RAPTOR->>RAPTOR: Level 1 summarization
+    RAPTOR->>RAPTOR: Recursive clustering (L2)
+    RAPTOR->>RAPTOR: Level 2 summarization
+    RAPTOR->>RAPTOR: Recursive clustering (L3)
+    RAPTOR->>RAPTOR: Level 3 summarization
+
+    RAPTOR->>KB: Store enhanced knowledge base<br/>(chunks + summaries)
+    KB->>Storage: Persist vector embeddings
+
+    Storage-->>User: Processing complete
+
+    Note over RAPTOR,KB: Knowledge base now contains:<br/>- Original chunks<br/>- L1/L2/L3 summaries<br/>- Hierarchical structure

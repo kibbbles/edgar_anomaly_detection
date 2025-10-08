@@ -1,0 +1,43 @@
+graph TB
+    subgraph "Data Sources"
+        A[SEC EDGAR API]
+        B[Downloaded ZIP Files<br/>10-K/10-Q Filings]
+    end
+
+    subgraph "AWS EC2 Instance with GPU"
+        C[Filing Extractor]
+        D[Text Processor<br/>Chunking & Cleaning]
+        E[RAPTOR System]
+        F[Embedding Generator<br/>Sentence Transformers]
+        G[Knowledge Base<br/>ChromaDB]
+        H[Ollama LLM<br/>FinGPT Model]
+        I[Open WebUI]
+    end
+
+    subgraph "Storage"
+        J[(Processed Data<br/>JSON/Parquet)]
+        K[(Vector Embeddings)]
+    end
+
+    subgraph "Users"
+        L[End Users]
+    end
+
+    A -->|Download Filings| B
+    B -->|Extract| C
+    C -->|Parse HTML/XML| D
+    D -->|Chunks + Metadata| F
+    F -->|Generate Embeddings| E
+    E -->|Hierarchical Clustering<br/>& Summarization| G
+    G -->|Store| K
+    D -->|Store| J
+
+    L -->|Submit Query| I
+    I -->|Retrieve Context| G
+    G -->|Relevant Chunks<br/>+ Summaries| H
+    H -->|Generate Response| I
+    I -->|Display Results| L
+
+    style E fill:#ff9800,stroke:#f57c00,stroke-width:3px
+    style H fill:#4caf50,stroke:#388e3c,stroke-width:2px
+    style I fill:#2196f3,stroke:#1976d2,stroke-width:2px
