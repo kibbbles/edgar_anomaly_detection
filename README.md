@@ -7,8 +7,8 @@ AI-powered system for analyzing SEC 10-K and 10-Q filings using RAPTOR RAG (Recu
 **Core Technology:** RAPTOR RAG with hierarchical clustering and multi-level summarization
 
 **Data Sources:**
-- **Primary:** Downloaded ZIP archives of 10-K and 10-Q filings
-- **Scope:** Multiple companies across multiple years
+- **Primary:** Downloaded 10-K and 10-Q filings (1993-2024)
+- **Coverage:** 31 years of SEC EDGAR filings
 - **Target Sections:** Item 1A (Risk Factors), MD&A, and other disclosure sections
 
 **Infrastructure:**
@@ -102,12 +102,16 @@ pip install -r requirements.txt
 
 ### 2. Data Preparation
 
-Place your downloaded 10-K/10-Q ZIP files in `data/raw/`:
+**Current Data Holdings (1993-2024):**
+- 31 years of historical SEC EDGAR filings
+- Located in `data/external/` (downloaded archives)
+- Includes both 10-K annual reports and 10-Q quarterly filings
 
 ```
-data/raw/
-├── company1_10k_filings.zip
-├── company2_10k_filings.zip
+data/external/
+├── 1993-2000/          # Historical data
+├── 2001-2010/          # (if applicable)
+├── 2011-2024/          # Recent data
 └── ...
 ```
 
@@ -147,7 +151,7 @@ edgar_anomaly_detection/
 │
 ├── notebooks/
 │   ├── 01_project_plan.ipynb          # ✅ Comprehensive project plan with diagrams
-│   ├── 02_data_collection_summary.ipynb
+│   ├── 02_data_collection.ipynb       # ✅ Data collection documentation
 │   └── 03_raptor_testing.ipynb        # (TBD) RAPTOR validation
 │
 ├── src/
@@ -255,8 +259,8 @@ Once deployed, users can ask questions like:
 
 ## Documentation
 
-- **Project Plan:** See `notebooks/01_project_plan.ipynb` for comprehensive technical architecture with mermaid diagrams
-- **Data Collection:** See `notebooks/02_data_collection_summary.ipynb` for filing download status
+- **Project Plan:** See `notebooks/01_project_plan.ipynb` for comprehensive technical architecture with diagrams
+- **Data Collection:** See `notebooks/02_data_collection.ipynb` for filing download status (1993-2024 coverage)
 - **Development Guidelines:** See `CLAUDE.md` for coding standards and workflow
 
 ## References
@@ -273,7 +277,8 @@ Once deployed, users can ask questions like:
 **Status:** Phase 1 (Planning & Architecture) → Starting Phase 2 (Data Processing)
 
 **Recent Updates:**
-- Created comprehensive project plan with 3 mermaid diagrams (architecture, RAPTOR pipeline, data workflow)
+- Created comprehensive project plan with 3 PNG diagrams (architecture, RAPTOR pipeline, data workflow)
 - Documented RAPTOR RAG approach for hierarchical document processing
 - Specified EC2 GPU infrastructure with Ollama and Open WebUI
 - Defined 4-phase implementation roadmap
+- **Data Coverage:** 1993-2024 (31 years of SEC EDGAR filings)
