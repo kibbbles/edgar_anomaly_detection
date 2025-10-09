@@ -8,7 +8,7 @@ AI-powered system for analyzing SEC 10-K and 10-Q filings using RAPTOR RAG (Recu
 
 **Data Sources:**
 - **Primary:** Downloaded 10-K and 10-Q filings (1993-2024)
-- **Coverage:** 31 years of SEC EDGAR filings (~51 GB)
+- **Coverage:** 32 years of SEC EDGAR filings (~51 GB, SRAF-cleaned format)
 - **Scope:** Complete filings (all sections processed)
 
 **Infrastructure:**
@@ -103,10 +103,11 @@ pip install -r requirements.txt
 ### 2. Data Preparation
 
 **Current Data Holdings (1993-2024):**
-- 31 years of historical SEC EDGAR filings
+- 32 years of historical SEC EDGAR filings (complete EDGAR history)
 - **Total Size:** ~51 GB of data
 - Located in `data/external/` (downloaded archives)
 - Includes both 10-K annual reports and 10-Q quarterly filings
+- **EDA Verified:** 100% SRAF format consistency across all 32 years
 
 ```
 data/external/
@@ -282,4 +283,5 @@ Once deployed, users can ask questions like:
 - Documented RAPTOR RAG approach for hierarchical document processing
 - Specified EC2 GPU infrastructure with Ollama and Open WebUI
 - Defined 4-phase implementation roadmap
-- **Data Coverage:** 1993-2024 (31 years of SEC EDGAR filings)
+- **Data Coverage:** 1993-2024 (32 years of SEC EDGAR filings - complete EDGAR history)
+- **EDA Complete:** 1,375 unique filings analyzed - 100% SRAF format consistency

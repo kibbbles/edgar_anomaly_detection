@@ -6,6 +6,7 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
 ENV/
 build/
 develop-eggs/
@@ -32,6 +33,7 @@ data/raw/
 data/processed/
 data/external/
 data/reports/
+eda/
 
 # Environment variables
 .env
@@ -63,3 +65,10 @@ resources/
 
 # Development guidelines
 CLAUDE.md
+
+# Screenshots and temp files
+*.png
+~$*.xlsx
+
+# Claude configuration
+.claude/
