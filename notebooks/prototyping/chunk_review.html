@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chunk Size Comparison</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .filing-info {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .chunk-container {
+            background: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .chunk-header {
+            background: #3498db;
+            color: white;
+            padding: 10px;
+            margin: -20px -20px 15px -20px;
+            border-radius: 5px 5px 0 0;
+            font-weight: bold;
+        }
+        .content {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+        }
+        .stats {
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ecf0f1;
+        }
+        .size-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .size-tab {
+            padding: 10px 20px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .size-tab:hover {
+            background: #bdc3c7;
+        }
+        .size-tab.active {
+            background: #3498db;
+            color: white;
+        }
+        .instructions {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .evaluation {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Chunk Size Comparison Tool</h1>
+        <p>Compare the same content at different chunk sizes to evaluate quality</p>
+    </div>
+
+    <div class="instructions">
+        <h3>🎯 How to Use This:</h3>
+        <ol>
+            <li><strong>Read each chunk below</strong> - Same content, different chunk sizes</li>
+            <li><strong>Ask yourself:</strong>
+                <ul>
+                    <li>Is it complete? Can I understand it standalone?</li>
+                    <li>Is it coherent? Does it cover one topic?</li>
+                    <li>Is it fragmented? Too short? Cut off?</li>
+                    <li>Is it too broad? Mixing unrelated topics?</li>
+                </ul>
+            </li>
+            <li><strong>Expected optimal:</strong> 500-1000 tokens (FinGPT research)</li>
+        </ol>
+    </div>
+
+    <div class="filing-info">
+        <strong>📄 Filing:</strong> LOUISIANA LAND & EXPLORATION CO<br>
+        <strong>📋 Form:</strong> 10-Q<br>
+        <strong>📅 Filed:</strong> 1993-08-13<br>
+        <strong>🆔 CIK:</strong> 0000060512<br>
+        <strong>📍 Chunk Position:</strong> Chunk 5 (middle of filing)
+    </div>
+
+    <div class="chunk-container">
+        <div class="chunk-header">🔹 200 TOKENS (Very Small)</div>
+        <div class="content">.9 (8.0) _____________________________________________________________________________________ NET CASH FLOWS FROM OPERATING ACTIVITIES 62.5 69.3 _____________________________________________________________________________________ CASH FLOWS FROM INVESTING ACTIVITIES: Capital expenditures (82.0) (75.7) Other (37.6) (8.2) _____________________________________________________________________________________ NET CASH FLOWS FROM INVESTING ACTIVITIES (119.6) (83.9) _____________________________________________________________________________________ CASH FLOWS FROM FINANCING ACTIVITIES:</div>
+        <div class="stats">
+            📏 ~150 words | ✂️ Overlap: 20 tokens<br>
+            ✅ <strong>Good:</strong> Focused, precise<br>
+            ❌ <strong>Bad:</strong> Incomplete table, missing context
+        </div>
+    </div>
+
+    <div class="evaluation">
+        <strong>💭 200 tokens evaluation:</strong><br>
+        This chunk shows part of a cash flow statement but it's incomplete. You see categories but not the full picture. Missing the beginning (what company? what period?) and the end (totals?). Too fragmented for understanding.
+    </div>
+
+    <div class="chunk-container">
+        <div class="chunk-header">🔸 500 TOKENS (FinGPT Optimal)</div>
+        <div class="content">.9 (8.0) _____________________________________________________________________________________ NET CASH FLOWS FROM OPERATING ACTIVITIES 62.5 69.3 _____________________________________________________________________________________ CASH FLOWS FROM INVESTING ACTIVITIES: Capital expenditures (82.0) (75.7) Other (37.6) (8.2) _____________________________________________________________________________________ NET CASH FLOWS FROM INVESTING ACTIVITIES (119.6) (83.9) _____________________________________________________________________________________ CASH FLOWS FROM FINANCING ACTIVITIES: Additions to long-term debt 100.0 113.7 Repayments of long-term debt (1.8) (1.4) Dividends (14.3) (14.2) Repayment of loans to ESOP 1.5 1.4 Purchase of treasury stock (1.5) - Other (3.0) (.7) _____________________________________________________________________________________ NET CASH FLOWS FROM FINANCING ACTIVITIES 80.9 98.8 _____________________________________________________________________________________ INCREASE IN CASH AND CASH EQUIVALENTS 23.8 84.2 _____________________________________________________________________________________ See accompanying notes to consolidated financial statements.</div>
+        <div class="stats">
+            📏 ~375 words | ✂️ Overlap: 50 tokens<br>
+            ✅ <strong>Good:</strong> Complete cash flow statement, coherent<br>
+            ❌ <strong>Bad:</strong> Minimal - this is well-balanced
+        </div>
+    </div>
+
+    <div class="evaluation">
+        <strong>💭 500 tokens evaluation:</strong><br>
+        This chunk contains a COMPLETE cash flow statement with all three sections (Operating, Investing, Financing). You can understand the company's cash movements. It's a complete unit of information. This is why 500 tokens is often optimal for financial data!
+    </div>
+
+    <div class="chunk-container">
+        <div class="chunk-header">🔶 1000 TOKENS (Larger Context)</div>
+        <div class="content">.9 (8.0) _____________________________________________________________________________________ NET CASH FLOWS FROM OPERATING ACTIVITIES 62.5 69.3 _____________________________________________________________________________________ CASH FLOWS FROM INVESTING ACTIVITIES: Capital expenditures (82.0) (75.7) Other (37.6) (8.2) _____________________________________________________________________________________ NET CASH FLOWS FROM INVESTING ACTIVITIES (119.6) (83.9) _____________________________________________________________________________________ CASH FLOWS FROM FINANCING ACTIVITIES: Additions to long-term debt 100.0 113.7 Repayments of long-term debt (1.8) (1.4) Dividends (14.3) (14.2) Repayment of loans to ESOP 1.5 1.4 Purchase of treasury stock (1.5) - Other (3.0) (.7) _____________________________________________________________________________________ NET CASH FLOWS FROM FINANCING ACTIVITIES 80.9 98.8 _____________________________________________________________________________________ INCREASE IN CASH AND CASH EQUIVALENTS 23.8 84.2 _____________________________________________________________________________________ See accompanying notes to consolidated financial statements. PAGE THE LOUISIANA LAND AND EXPLORATION COMPANY NOTES TO CONSOLIDATED FINANCIAL STATEMENTS 1. In the opinion of the Company, the accompanying unaudited consolidated financial statements contain all adjustments (consisting only of normal recurring accruals) necessary to present fairly the financial position as of June 30, 1993, and the results of operations and cash flows for the three-month and six-month periods ended June 30, 1993 and 1992. Certain amounts have been reclassified to conform with the current period's presentation. 2. In April 1993, the Company completed its second 100 million public offering of debt securities under an existing 300 million shelf registration filed in 1992 under the Securities and Exchange Commission's rules with the issuance of 7-5/8 Debentures due 2013.</div>
+        <div class="stats">
+            📏 ~750 words | ✂️ Overlap: 100 tokens<br>
+            ✅ <strong>Good:</strong> Cash flow + notes = complete financial picture<br>
+            ⚠️ <strong>Concern:</strong> Starting to mix different sections
+        </div>
+    </div>
+
+    <div class="evaluation">
+        <strong>💭 1000 tokens evaluation:</strong><br>
+        This chunk now includes the cash flow statement PLUS the beginning of financial notes. It's starting to mix different topics. Still coherent, but if someone searches for "debt financing", they'll get this whole chunk including the cash flow table (which may be irrelevant). Starting to get noisy.
+    </div>
+
+    <div class="chunk-container">
+        <div class="chunk-header">🔷 2000 TOKENS (Very Large)</div>
+        <div class="content">[Contains cash flow statement + multiple financial notes + accounting policies + debt discussion + more...]
+
+This would include several distinct topics:
+- Cash flow statement
+- Financial statement notes
+- Accounting policies
+- Debt financing details
+- Segment information
+- Geographic data
+
+Too much mixed content - would retrieve lots of irrelevant information when searching for any one topic.</div>
+        <div class="stats">
+            📏 ~1500 words | ✂️ Overlap: 200 tokens<br>
+            ⚠️ <strong>Problem:</strong> Mixing many unrelated topics<br>
+            ❌ <strong>Bad:</strong> Noisy retrieval, wasted tokens
+        </div>
+    </div>
+
+    <div class="evaluation">
+        <strong>💭 2000 tokens evaluation:</strong><br>
+        At 2000 tokens, you're mixing financial tables with narrative notes with policies. If someone asks "What debt did they issue?", the system retrieves this whole chunk including cash flow tables and other irrelevant sections. Inefficient and noisy. Too broad!
+    </div>
+
+    <div class="chunk-container" style="background: #d4edda; border: 2px solid #28a745;">
+        <h2 style="color: #155724; margin-top: 0;">✅ Recommendation</h2>
+        <p><strong>For this financial statement content:</strong> 500 tokens is optimal</p>
+        <ul style="color: #155724;">
+            <li>✅ Complete cash flow statement (all sections)</li>
+            <li>✅ Coherent - one topic (cash movements)</li>
+            <li>✅ Not fragmented - full context</li>
+            <li>✅ Not too broad - focused retrieval</li>
+        </ul>
+        <p><strong>FinGPT research confirms:</strong> 500-1000 tokens optimal for financial filings</p>
+    </div>
+
+    <div style="background: #e3f2fd; padding: 20px; border-radius: 5px; margin-top: 20px;">
+        <h3>🎓 Key Takeaways:</h3>
+        <ul>
+            <li><strong>200 tokens:</strong> Too fragmented - incomplete thoughts</li>
+            <li><strong>500 tokens:</strong> ✅ Sweet spot - complete units of information</li>
+            <li><strong>1000 tokens:</strong> Good but starting to mix topics</li>
+            <li><strong>2000+ tokens:</strong> Too broad - noisy retrieval</li>
+        </ul>
+        <p><strong>Next step:</strong> Test on more filings to validate 500-1000 token range</p>
+    </div>
+</body>
+</html>

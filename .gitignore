@@ -35,6 +35,9 @@ data/external/
 data/reports/
 eda/
 
+# Notebook prototyping outputs (large JSON files)
+notebooks/prototyping/output/
+
 # Environment variables
 .env
 

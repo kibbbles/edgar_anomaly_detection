@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chunk Size Comparison - Real Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .instructions {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .filing-info {
+            background: #e3f2fd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #2196f3;
+        }
+        .chunk-container {
+            background: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .chunk-header {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            margin: -20px -20px 15px -20px;
+            border-radius: 5px 5px 0 0;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .content {
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 13px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .stats {
+            color: #7f8c8d;
+            font-size: 13px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ecf0f1;
+        }
+        .evaluation-section {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+        .eval-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-good {
+            background: #4caf50;
+            color: white;
+        }
+        .btn-fragmented {
+            background: #ff9800;
+            color: white;
+        }
+        .btn-broad {
+            background: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Chunk Size Comparison - Actual Data</h1>
+        <p>Review the SAME content at different chunk sizes and decide which works best</p>
+    </div>
+
+    <div class="instructions">
+        <h3>📋 Instructions:</h3>
+        <ol>
+            <li><strong>Read each chunk below</strong> (same content, different sizes)</li>
+            <li><strong>For EACH chunk, ask yourself:</strong>
+                <ul>
+                    <li>✅ <strong>Is it COMPLETE?</strong> Does it contain a full thought/section?</li>
+                    <li>✅ <strong>Is it COHERENT?</strong> Can you understand it standalone?</li>
+                    <li>❌ <strong>Is it FRAGMENTED?</strong> Cut off mid-sentence? Missing context?</li>
+                    <li>❌ <strong>Is it TOO BROAD?</strong> Mixing unrelated topics?</li>
+                </ul>
+            </li>
+            <li><strong>Write notes</strong> in the text box below each chunk</li>
+            <li><strong>Compare your notes</strong> across all sizes at the end</li>
+        </ol>
+        <p><strong>⚠️ NO PRE-DETERMINED ANSWER:</strong> YOU decide which size works best based on what you see!</p>
+    </div>
+
+    <div class="filing-info">
+        <strong>📄 Filing:</strong> EXCEL INDUSTRIES INC<br>
+        <strong>📋 Form Type:</strong> 10-Q<br>
+        <strong>📅 Filing Date:</strong> 19941114<br>
+        <strong>🆔 CIK:</strong> 0000740868<br>
+        <strong>📁 File:</strong> 19941114_10-Q_edgar_data_740868_0000740868-94-000026.txt<br>
+        <strong>📍 Document Position:</strong> ~40% through filing (comparing same location across sizes)
+    </div>
+
+    <div class="chunk-container">
+        <div class="chunk-header">🔹 200 TOKENS</div>
+        <div class="content">RIES, INC. CONSOLIDATED STATEMENTS OF CASH FLOWS (UNAUDITED) (in thousands of dollars) Nine Months Ended September 30, 1994 1993 Cash flows from operating activities Net income 13,408 9,563 Adjustments to reconcile net income to net cash from operating activities: Depreciation and amortization 9,396 8,194 Deferred income taxes and other 1,541 3,133 Changes in current assets and liabilities Accounts receivable and other (17,255) (14,951) Inventories and customer tooling (9,771) 7,818) Investment in marketable securities 3,525 (45,783) Accounts payable and accrued liabilities 24,708 8,016 Total adjustments 12,144 (49,209) Net cash provided by (used for) operating activities 25,552 (39,646) Cash flows from investing activities Purchase of property, plant and equipment</div>
+        <div class="stats">
+            📏 <strong>Size:</strong> 200 tokens (~107 words, 775 characters)<br>
+            📊 <strong>Chunk:</strong> 11 of 27<br>
+            📈 <strong>Filing total:</strong> 4,688 tokens
+        </div>
+        <div class="evaluation-section">
+            <strong>✍️ Your evaluation of 200 tokens:</strong><br>
+            <textarea id="eval_200" placeholder="Write your notes here... Is it complete? Coherent? Too fragmented? Too broad? What works? What doesn't?"></textarea>
+            <div class="eval-buttons">
+                <button class="btn-good" onclick="document.getElementById('eval_200').value += '✅ COMPLETE & COHERENT - '">✅ Good</button>
+                <button class="btn-fragmented" onclick="document.getElementById('eval_200').value += '⚠️ TOO FRAGMENTED - '">⚠️ Fragmented</button>
+                <button class="btn-broad" onclick="document.getElementById('eval_200').value += '❌ TOO BROAD - '">❌ Too Broad</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="chunk-container">
+        <div class="chunk-header">🔹 500 TOKENS</div>
+        <div class="content">RIES, INC. CONSOLIDATED STATEMENTS OF CASH FLOWS (UNAUDITED) (in thousands of dollars) Nine Months Ended September 30, 1994 1993 Cash flows from operating activities Net income 13,408 9,563 Adjustments to reconcile net income to net cash from operating activities: Depreciation and amortization 9,396 8,194 Deferred income taxes and other 1,541 3,133 Changes in current assets and liabilities Accounts receivable and other (17,255) (14,951) Inventories and customer tooling (9,771) 7,818) Investment in marketable securities 3,525 (45,783) Accounts payable and accrued liabilities 24,708 8,016 Total adjustments 12,144 (49,209) Net cash provided by (used for) operating activities 25,552 (39,646) Cash flows from investing activities Purchase of property, plant and equipment (19,299) (13,663) Other 517 (451) Net cash used for investing activities (18,782) (14,114) Cash flows from financing activities Issuance of common stock 7,229 30,205 Maturities of long-term debt (1,350) (1,756) Issuance of long-term debt -- 481 Dividends (2,835) (2,325) Purchase of treasury shares (2,853) -- Net cash from financing activities 191 26,605 Net change in cash and cash equivalents 6,961 (27,155) Cash and cash equivalents at beginning of year 6,767 27,510 Cash and cash equivalents at end of third quarter 13,728 355 - 4 - EXCEL INDUSTRIES, INC. NOTES TO CONSOLIDATED FINANCIAL STATEMENTS Note 1 - Basis of Presentation: The financial statements have been prepared from the unaudited financial records of the Company. In the opinion of management, the financial statements include all adjustments consisting only of normal recurring adjustments necessary for a fair presentation of the results of operations and financial position for the interim periods. Note 2 - Marketable Securities: Marketable securities consist of U.S. Government securities, tax- free municipal securities and municipal fund par value preferred shares and are classified as trading securities in accordance with FAS 115. Certain amounts for 1993 have been reclassified to conform to the </div>
+        <div class="stats">
+            📏 <strong>Size:</strong> 500 tokens (~299 words, 2,052 characters)<br>
+            📊 <strong>Chunk:</strong> 5 of 11<br>
+            📈 <strong>Filing total:</strong> 4,688 tokens
+        </div>
+        <div class="evaluation-section">
+            <strong>✍️ Your evaluation of 500 tokens:</strong><br>
+            <textarea id="eval_500" placeholder="Write your notes here... Is it complete? Coherent? Too fragmented? Too broad? What works? What doesn't?"></textarea>
+            <div class="eval-buttons">
+                <button class="btn-good" onclick="document.getElementById('eval_500').value += '✅ COMPLETE & COHERENT - '">✅ Good</button>
+                <button class="btn-fragmented" onclick="document.getElementById('eval_500').value += '⚠️ TOO FRAGMENTED - '">⚠️ Fragmented</button>
+                <button class="btn-broad" onclick="document.getElementById('eval_500').value += '❌ TOO BROAD - '">❌ Too Broad</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="chunk-container">
+        <div class="chunk-header">🔹 1000 TOKENS</div>
+        <div class="content">RIES, INC. CONSOLIDATED STATEMENTS OF CASH FLOWS (UNAUDITED) (in thousands of dollars) Nine Months Ended September 30, 1994 1993 Cash flows from operating activities Net income 13,408 9,563 Adjustments to reconcile net income to net cash from operating activities: Depreciation and amortization 9,396 8,194 Deferred income taxes and other 1,541 3,133 Changes in current assets and liabilities Accounts receivable and other (17,255) (14,951) Inventories and customer tooling (9,771) 7,818) Investment in marketable securities 3,525 (45,783) Accounts payable and accrued liabilities 24,708 8,016 Total adjustments 12,144 (49,209) Net cash provided by (used for) operating activities 25,552 (39,646) Cash flows from investing activities Purchase of property, plant and equipment (19,299) (13,663) Other 517 (451) Net cash used for investing activities (18,782) (14,114) Cash flows from financing activities Issuance of common stock 7,229 30,205 Maturities of long-term debt (1,350) (1,756) Issuance of long-term debt -- 481 Dividends (2,835) (2,325) Purchase of treasury shares (2,853) -- Net cash from financing activities 191 26,605 Net change in cash and cash equivalents 6,961 (27,155) Cash and cash equivalents at beginning of year 6,767 27,510 Cash and cash equivalents at end of third quarter 13,728 355 - 4 - EXCEL INDUSTRIES, INC. NOTES TO CONSOLIDATED FINANCIAL STATEMENTS Note 1 - Basis of Presentation: The financial statements have been prepared from the unaudited financial records of the Company. In the opinion of management, the financial statements include all adjustments consisting only of normal recurring adjustments necessary for a fair presentation of the results of operations and financial position for the interim periods. Note 2 - Marketable Securities: Marketable securities consist of U.S. Government securities, tax- free municipal securities and municipal fund par value preferred shares and are classified as trading securities in accordance with FAS 115. Certain amounts for 1993 have been reclassified to conform to the 1994 classification. Note 3 - Inventories: Inventories consist of the following: (in thousands) September 30, December 31, 1994 1993 Raw materials 21,376 17,948 Work in process and finished goods 14,508 12,378 LIFO reserve (459) (459) 35,425 29,867 Note 4 - Net Income per Share: Primary net income per share is computed using the weighted average number of shares outstanding during the period. In computing fully diluted earnings per share, the conversion of the Company's 10 Convertible Subordinated Notes is also assumed except when the effect of the conversion is anti-dilutive. Shares used to compute net income per share data are as follows (amounts in thousands): Three Months Ended Nine Months Ended September 30, September 30, 1994 1993 1994 1993 Primary 10,919 10,565 10,828 9,972 Fully-diluted 13,189 12,836 13,099 12,242 Note 5 - Contingencies A chemical cleaning compound, trichlorethylene ("TCE"), has been found in the soil and grou...</div>
+        <div class="stats">
+            📏 <strong>Size:</strong> 1000 tokens (~639 words, 4,221 characters)<br>
+            📊 <strong>Chunk:</strong> 3 of 6<br>
+            📈 <strong>Filing total:</strong> 4,688 tokens
+        </div>
+        <div class="evaluation-section">
+            <strong>✍️ Your evaluation of 1000 tokens:</strong><br>
+            <textarea id="eval_1000" placeholder="Write your notes here... Is it complete? Coherent? Too fragmented? Too broad? What works? What doesn't?"></textarea>
+            <div class="eval-buttons">
+                <button class="btn-good" onclick="document.getElementById('eval_1000').value += '✅ COMPLETE & COHERENT - '">✅ Good</button>
+                <button class="btn-fragmented" onclick="document.getElementById('eval_1000').value += '⚠️ TOO FRAGMENTED - '">⚠️ Fragmented</button>
+                <button class="btn-broad" onclick="document.getElementById('eval_1000').value += '❌ TOO BROAD - '">❌ Too Broad</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="chunk-container">
+        <div class="chunk-header">🔹 2000 TOKENS</div>
+        <div class="content">RIES, INC. CONSOLIDATED STATEMENTS OF CASH FLOWS (UNAUDITED) (in thousands of dollars) Nine Months Ended September 30, 1994 1993 Cash flows from operating activities Net income 13,408 9,563 Adjustments to reconcile net income to net cash from operating activities: Depreciation and amortization 9,396 8,194 Deferred income taxes and other 1,541 3,133 Changes in current assets and liabilities Accounts receivable and other (17,255) (14,951) Inventories and customer tooling (9,771) 7,818) Investment in marketable securities 3,525 (45,783) Accounts payable and accrued liabilities 24,708 8,016 Total adjustments 12,144 (49,209) Net cash provided by (used for) operating activities 25,552 (39,646) Cash flows from investing activities Purchase of property, plant and equipment (19,299) (13,663) Other 517 (451) Net cash used for investing activities (18,782) (14,114) Cash flows from financing activities Issuance of common stock 7,229 30,205 Maturities of long-term debt (1,350) (1,756) Issuance of long-term debt -- 481 Dividends (2,835) (2,325) Purchase of treasury shares (2,853) -- Net cash from financing activities 191 26,605 Net change in cash and cash equivalents 6,961 (27,155) Cash and cash equivalents at beginning of year 6,767 27,510 Cash and cash equivalents at end of third quarter 13,728 355 - 4 - EXCEL INDUSTRIES, INC. NOTES TO CONSOLIDATED FINANCIAL STATEMENTS Note 1 - Basis of Presentation: The financial statements have been prepared from the unaudited financial records of the Company. In the opinion of management, the financial statements include all adjustments consisting only of normal recurring adjustments necessary for a fair presentation of the results of operations and financial position for the interim periods. Note 2 - Marketable Securities: Marketable securities consist of U.S. Government securities, tax- free municipal securities and municipal fund par value preferred shares and are classified as trading securities in accordance with FAS 115. Certain amounts for 1993 have been reclassified to conform to the 1994 classification. Note 3 - Inventories: Inventories consist of the following: (in thousands) September 30, December 31, 1994 1993 Raw materials 21,376 17,948 Work in process and finished goods 14,508 12,378 LIFO reserve (459) (459) 35,425 29,867 Note 4 - Net Income per Share: Primary net income per share is computed using the weighted average number of shares outstanding during the period. In computing fully diluted earnings per share, the conversion of the Company's 10 Convertible Subordinated Notes is also assumed except when the effect of the conversion is anti-dilutive. Shares used to compute net income per share data are as follows (amounts in thousands): Three Months Ended Nine Months Ended September 30, September 30, 1994 1993 1994 1993 Primary 10,919 10,565 10,828 9,972 Fully-diluted 13,189 12,836 13,099 12,242 Note 5 - Contingencies A chemical cleaning compound, trichlorethylene ("TCE"), has been found in the soil and grou...</div>
+        <div class="stats">
+            📏 <strong>Size:</strong> 2000 tokens (~1398 words, 8,916 characters)<br>
+            📊 <strong>Chunk:</strong> 2 of 3<br>
+            📈 <strong>Filing total:</strong> 4,688 tokens
+        </div>
+        <div class="evaluation-section">
+            <strong>✍️ Your evaluation of 2000 tokens:</strong><br>
+            <textarea id="eval_2000" placeholder="Write your notes here... Is it complete? Coherent? Too fragmented? Too broad? What works? What doesn't?"></textarea>
+            <div class="eval-buttons">
+                <button class="btn-good" onclick="document.getElementById('eval_2000').value += '✅ COMPLETE & COHERENT - '">✅ Good</button>
+                <button class="btn-fragmented" onclick="document.getElementById('eval_2000').value += '⚠️ TOO FRAGMENTED - '">⚠️ Fragmented</button>
+                <button class="btn-broad" onclick="document.getElementById('eval_2000').value += '❌ TOO BROAD - '">❌ Too Broad</button>
+            </div>
+        </div>
+    </div>
+
+    <div style="background: #f0f0f0; padding: 20px; border-radius: 5px; margin-top: 30px;">
+        <h2>🎯 Summary - Which Size Works Best?</h2>
+        <textarea id="final_summary" placeholder="After reviewing all 4 sizes, write your conclusion here:&#10;&#10;- Which size felt most complete and coherent?&#10;- Which was too fragmented?&#10;- Which was too broad?&#10;- Your recommended chunk size:&#10;- Why?" style="min-height: 150px;"></textarea>
+        <p style="margin-top: 15px; color: #666;">
+            <strong>Note:</strong> Your evaluation is based on ONE chunk. You should review 3-5 different chunks
+            from different filings to validate your conclusion!
+        </p>
+    </div>
+
+    <div style="background: #e3f2fd; padding: 20px; border-radius: 5px; margin-top: 20px;">
+        <h3>📚 Reference: What to Look For</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr style="background: #f5f5f5;">
+                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Criteria</th>
+                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Good Chunk</th>
+                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Bad Chunk</th>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Completeness</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Contains full idea/section</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Sentences cut off mid-thought</td>
+            </tr>
+            <tr style="background: #f9f9f9;">
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Coherence</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">One topic, understandable standalone</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Mixes unrelated topics</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Context</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Enough info to understand meaning</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Missing crucial context</td>
+            </tr>
+            <tr style="background: #f9f9f9;">
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Focus</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Targeted, little irrelevant content</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Lots of noise, unrelated info</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
