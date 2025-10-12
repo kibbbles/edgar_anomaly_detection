@@ -1,15 +1,18 @@
-# SEC EDGAR Risk Factor Analysis - AI Project
+# SEC EDGAR 10-K/10-Q Analysis - RAPTOR RAG System
 
 ## Project Overview
-Proof-of-concept AI system analyzing 10-K Risk Factor disclosures (Item 1A) for 20 companies across 5 years (2020-2024).
-Total scope: 100 filings, 80 year-over-year comparison pairs.
+AI-powered system analyzing complete SEC 10-K and 10-Q filings (1993-2024) using RAPTOR RAG (Recursive Adaptive Processing and Topical Organizational Retrieval).
+
+**Data Coverage:** 31 years of SEC EDGAR filings (~51 GB)
 
 **Core Capabilities:**
-- Extract Item 1A sections via SEC EDGAR API
-- Detect YoY changes (new/removed/modified risks)
-- Classify risk categories (operational, financial, legal, cyber, etc.)
-- Score boilerplate vs. substantive disclosure
-- Interactive dashboard for analysis
+- Process entire 10-K/10-Q filings (all sections)
+- Hierarchical clustering and multi-level summarization
+- Interactive querying via Open WebUI
+- Semantic search across full filing content
+- Year-over-year analysis across any section
+
+---
 
 ## Working Principles
 
@@ -25,86 +28,153 @@ Total scope: 100 filings, 80 year-over-year comparison pairs.
 - Move working notebook code to `src/` immediately
 - No duplicate logic between notebooks and modules
 
+### Python Encoding Best Practices
+- **ALWAYS** set `encoding='utf-8'` when opening files for reading/writing
+- **AVOID** using emojis or special Unicode characters in print statements (Windows cp1252 encoding issues)
+- **USE** ASCII-safe alternatives: `[OK]` instead of ✅, `[FAIL]` instead of ❌, `[WARN]` instead of ⚠️
+- If Unicode is required, wrap print statements with encoding handling:
+  ```python
+  import sys
+  sys.stdout.reconfigure(encoding='utf-8')  # At script start
+  ```
+- Common error to avoid: `UnicodeEncodeError: 'charmap' codec can't encode character`
+
 ### Version Control (Git)
 - Commit after each working feature
-- Meaningful commit messages: "Add SEC API client with rate limiting"
-- `.gitignore`: exclude `data/raw/`, `data/processed/`, `.ipynb_checkpoints/`, `__pycache__/`, `.env`
-- Branch strategy: `main` for stable code, feature branches for experiments
+- Meaningful commit messages: "Add RAPTOR clustering implementation"
+- `.gitignore`: exclude `data/external/`, `data/processed/`, `.ipynb_checkpoints/`, `__pycache__/`, `.env`, `CLAUDE.md`, `resources/`
+- Branch strategy: `master` for stable code, feature branches for experiments
 - Push to GitHub after major milestones
+
+---
 
 ## Core Files (Keep These)
 
 ### Data Layer (`src/data/`)
-- `edgar_client.py` - SEC API wrapper, handles rate limiting (10 req/sec), downloads filings
-- `risk_extractor.py` - Extract Item 1A from HTML/XML/text, parse into structured format
+- `filing_extractor.py` - Unzip archives, extract full 10-K/10-Q text from HTML/XML/SGML
+- `text_processor.py` - Clean text, chunk into 2000-token segments
 
 ### Model Layer (`src/models/`)
-- `risk_comparator.py` - YoY semantic similarity using sentence-transformers
-- `risk_classifier.py` - Categorize risks (operational/financial/legal/cyber)
-- `boilerplate_scorer.py` - Score generic vs. specific language
+- `raptor.py` - RAPTOR class (adapted from FinGPT): hierarchical clustering, recursive summarization
+- `embedding_generator.py` - Generate embeddings using Sentence Transformers
+- `clustering.py` - UMAP + GMM clustering implementation
 
 ### Pipeline Layer (`src/pipeline/`)
-- `analysis_pipeline.py` - End-to-end orchestration: ticker → download → extract → analyze → report
+- `knowledge_base_builder.py` - End-to-end: extract → chunk → embed → cluster → summarize → store
 
 ### Dashboard (`dashboard/`)
-- `streamlit_app.py` - Interactive UI for exploring risk analysis
+- Open WebUI integration for interactive querying
+
+---
 
 ## Utility Functions (Candidates for Deletion After Use)
 
 ### One-Off Scripts
-- Data validation scripts after initial download
-- Manual inspection helpers
-- Format conversion utilities (unless reused frequently)
+- Data validation scripts after initial extraction
+- Format inspection helpers
 - Debugging/logging scripts for specific issues
 
 **Rule:** If a script is used once and won't be needed again, DELETE it immediately.
 
+---
+
 ## Technical Stack
+
+### Core Technologies
 - **Python 3.10+**
-- **NLP:** sentence-transformers (all-mpnet-base-v2), transformers, scikit-learn
-- **Data:** pandas, numpy, requests
-- **Dashboard:** streamlit
-- **Storage:** JSON/Parquet (no database initially)
+- **LLM Model:** FinGPT-v3 (Llama2-based, via Ollama)
+- **RAPTOR:** Adapted from FinGPT's `FinancialReportAnalysis/utils/rag.py`
+- **Embeddings:** Sentence Transformers (`all-MiniLM-L6-v2`)
+- **Clustering:** UMAP + scikit-learn GMM
+- **Vector Store:** ChromaDB
+- **UI:** Open WebUI
 
-## Data Scope
-- **Companies:** 20 (diverse sectors)
-- **Years:** 5 (FY 2020-2024)
-- **Total Filings:** 100 10-Ks
-- **Comparisons:** 80 YoY pairs
-
-## SEC EDGAR API
-- Base: `https://data.sec.gov/`
-- User-Agent required: `"Your Name email@company.com"`
-- Rate limit: 10 requests/second
-- Submissions: `https://data.sec.gov/submissions/CIK{10-digit}.json`
-
-## Success Metrics
-- Extract Item 1A from 90%+ filings
-- Detect YoY changes with 80%+ accuracy (manual validation on 10 samples)
-- Dashboard loads results in <5 seconds
-
-## Current Phase
-**Phase 1: Data Collection (Weeks 1-2)**
-- [ ] Set up project structure
-- [ ] Implement `edgar_client.py`
-- [ ] Download 100 10-Ks (20 companies × 5 years)
-- [ ] Implement `risk_extractor.py`
-- [ ] Validate Item 1A extraction on 10 sample filings
-- [ ] Store in structured format (JSON/Parquet)
-
-## Next Steps
-1. Confirm project folder structure
-2. Initialize Git repository
-3. Create `edgar_client.py` (with confirmation)
-4. Test on 3 companies before scaling to 20
-5. Build extraction logic iteratively
-
-## Notes
-- SEC filings are inconsistently formatted - expect iteration on extraction
-- Don't over-engineer - get end-to-end working first, optimize later
-- Manual validation is critical before scaling
-- Focus on Item 1A only - no scope creep to other 10-K sections
+### Libraries
+- `langchain`, `langchain_community` - LLM orchestration
+- `sentence-transformers` - Local embeddings
+- `umap-learn` - Dimensionality reduction
+- `scikit-learn` - Clustering algorithms
+- `pandas`, `numpy` - Data manipulation
+- `ollama` - LLM serving
 
 ---
-**Last Updated:** 2025-10-03
-**Status:** Project initialization
+
+## Data Scope
+
+### Current Holdings
+- **Time Period:** 1993-2024 (31 years)
+- **Data Size:** ~51 GB in `data/external/`
+- **Filing Types:** Complete 10-K and 10-Q filings (all sections)
+- **Format:** ZIP archives organized by year ranges
+
+### Processing Approach
+- Extract **entire filings** (not limited to specific sections)
+- RAPTOR clustering will naturally organize content by topic
+- Users can query any section or topic across all filings
+
+---
+
+## SEC EDGAR Data
+- Data Source: Notre Dame SRAF 10-X Cleaned Files
+- Format: HTML, XML, SGML (varies by time period)
+- Coverage: 1993-2024
+
+---
+
+## Success Metrics
+- Process 90%+ of filings (1993-2024) into knowledge base
+- Clustering produces coherent, interpretable topic groups
+- Generated summaries accurately capture content at each hierarchical level
+- LLM queries return relevant responses in <10 seconds
+- Manual validation: Test 10 YoY comparison queries, verify accuracy
+
+---
+
+## Implementation Phases
+
+### Phase 1: Model Research & Setup ✅
+- [x] Clarify FinGPT components (model vs. implementation)
+- [ ] Pull FinGPT-v3 into Ollama
+- [ ] Copy RAPTOR class from FinGPT's `rag.py`
+- [ ] Set up project structure
+
+### Phase 2: Data Processing Pipeline
+- [ ] Extract filings from ZIP archives (1993-2024)
+- [ ] Parse full 10-K/10-Q text (handle HTML/XML/SGML)
+- [ ] Chunk documents (2000 tokens/chunk)
+- [ ] Generate embeddings
+- [ ] Store structured data (JSON/Parquet)
+
+### Phase 3: RAPTOR Implementation
+- [ ] Implement hierarchical clustering (UMAP + GMM)
+- [ ] Build recursive summarization (3 levels)
+- [ ] Create enhanced knowledge base
+- [ ] Test on sample filings
+
+### Phase 4: Deployment
+- [ ] Set up Ollama on EC2 with FinGPT-v3
+- [ ] Deploy Open WebUI
+- [ ] Integrate RAPTOR with LLM
+- [ ] Create query templates
+
+---
+
+## Next Steps
+1. Extract sample filings to examine format evolution (1993 vs 2024)
+2. Build `filing_extractor.py` to handle multiple formats
+3. Test chunking strategy on diverse filings
+4. Copy RAPTOR class to `src/models/raptor.py`
+
+---
+
+## Notes
+- SEC filing formats evolved significantly (1993-2024): SGML → HTML → XML
+- Process **entire filings** to maximize RAG system value
+- Don't over-engineer - get end-to-end working first, optimize later
+- Manual validation is critical before scaling to full dataset
+- RAPTOR clustering handles content organization - no need to pre-filter sections
+
+---
+
+**Last Updated:** 2025-10-08
+**Status:** Phase 1 (Model clarification complete) → Starting Phase 2 (Data processing)
