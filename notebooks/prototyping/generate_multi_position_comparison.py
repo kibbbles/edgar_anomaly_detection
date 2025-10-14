@@ -17,7 +17,7 @@ def generate_multi_position_html(filing_idx=0, positions=[0.2, 0.5, 0.8]):
                    Default: [0.2, 0.5, 0.8] = beginning, middle, end
     """
 
-    sizes_to_compare = [200, 500, 1000, 2000]
+    sizes_to_compare = [200, 500, 1000, 2000, 3000, 4000]
 
     # Load metadata from first size
     first_size = sizes_to_compare[0]
