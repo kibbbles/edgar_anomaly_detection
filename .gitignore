@@ -37,6 +37,7 @@ eda/
 
 # Notebook prototyping outputs (large JSON files)
 notebooks/prototyping/output/
+notebooks/prototyping/archive_*/output/
 
 # Environment variables
 .env
