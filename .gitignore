@@ -70,6 +70,10 @@ resources/
 # Development guidelines
 CLAUDE.md
 
+# Handoff documents (temporary coordination files)
+AWS_EC2_SETUP_GUIDE.md
+COWORKER_HANDOFF.md
+
 # Screenshots and temp files
 *.png
 ~$*.xlsx
