@@ -1,39 +1,47 @@
 sequenceDiagram
-    participant User
-    participant FileSystem as File System<br/>(ZIP Archives)
-    participant Extractor as Filing Extractor
-    participant Parser as Text Processor
-    participant Embedder as Embedding Generator
-    participant RAPTOR as RAPTOR Engine
-    participant KB as Knowledge Base
-    participant Storage as Cloud Storage
+    participant Kabe as Kabe<br/>(Processing Lead)
+    participant FileSystem as AWS EC2 File System<br/>/app/data/edgar/
+    participant Extractor as Filing Extractor<br/>(Kabe)
+    participant Parser as Text Processor<br/>500-tok chunks (Kabe)
+    participant Embedder as Embedding Generator<br/>all-MiniLM-L6-v2 (Kabe)
+    participant RAPTOR as RAPTOR Engine<br/>(Kabe + Betsy)
+    participant Ollama as Ollama FinGPT-v3<br/>(Betsy)
+    participant KB as Knowledge Base<br/>ChromaDB (Betsy)
+    participant Storage as /app/data/<br/>processed/ & embeddings/
 
-    User->>FileSystem: Access ZIP files
-    FileSystem->>Extractor: Read 10-K/10-Q archives
-    Extractor->>Extractor: Unzip and extract filings
+    Kabe->>FileSystem: Upload 1993-2024 ZIP files<br/>(51GB total)
+    FileSystem->>Extractor: Read 10-X_C_YYYY.zip archives
+    Extractor->>Extractor: Unzip and extract filings<br/>(~300K total filings)
     Extractor->>Parser: Send raw HTML/XML
 
     Parser->>Parser: Parse complete filing text
     Parser->>Parser: Clean and normalize text
-    Parser->>Parser: Chunk into 2000 token segments
-    Parser->>Storage: Save chunks as JSON/Parquet
+    Parser->>Parser: Chunk into 500-token segments<br/>+ 100-token context
+    Parser->>Storage: Save chunks as JSON<br/>(~180-200GB)
 
-    Parser->>Embedder: Send text chunks
-    Embedder->>Embedder: Generate embeddings<br/>(Sentence Transformers)
+    Parser->>Embedder: Send text chunks<br/>(~40M chunks)
+    Embedder->>Embedder: Generate embeddings<br/>(384 dims per chunk)
+    Embedder->>Storage: Save embeddings NPY<br/>(~45-55GB)
 
     Embedder->>RAPTOR: Send chunks + embeddings
 
-    RAPTOR->>RAPTOR: Global clustering (UMAP + GMM)
+    RAPTOR->>RAPTOR: Global clustering (UMAP + GMM)<br/>(Kabe implements)
     RAPTOR->>RAPTOR: Local clustering refinement
-    RAPTOR->>RAPTOR: Level 1 summarization
+    RAPTOR->>Ollama: Request Level 1 summaries<br/>(Betsy: Ollama integration)
+    Ollama-->>RAPTOR: Return L1 summaries
+    RAPTOR->>RAPTOR: Embed L1 summaries
     RAPTOR->>RAPTOR: Recursive clustering (L2)
-    RAPTOR->>RAPTOR: Level 2 summarization
+    RAPTOR->>Ollama: Request Level 2 summaries
+    Ollama-->>RAPTOR: Return L2 summaries
+    RAPTOR->>RAPTOR: Embed L2 summaries
     RAPTOR->>RAPTOR: Recursive clustering (L3)
-    RAPTOR->>RAPTOR: Level 3 summarization
+    RAPTOR->>Ollama: Request Level 3 summaries
+    Ollama-->>RAPTOR: Return L3 summaries
 
-    RAPTOR->>KB: Store enhanced knowledge base<br/>(chunks + summaries)
-    KB->>Storage: Persist vector embeddings
+    RAPTOR->>KB: Store enhanced knowledge base<br/>(chunks + L1/L2/L3 summaries)
+    KB->>Storage: Persist vector embeddings<br/>(~250GB total)
 
-    Storage-->>User: Processing complete
+    Storage-->>Kabe: Processing complete
+    Storage-->>Ollama: Ready for queries
 
-    Note over RAPTOR,KB: Knowledge base now contains:<br/>- Original chunks<br/>- L1/L2/L3 summaries<br/>- Hierarchical structure
+    Note over RAPTOR,KB: Knowledge base contains:<br/>- 40M original chunks<br/>- L1/L2/L3 summaries<br/>- Hierarchical structure<br/>- 31 years of SEC filings

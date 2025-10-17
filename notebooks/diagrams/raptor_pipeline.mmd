@@ -1,24 +1,24 @@
 flowchart TD
-    Start([Start: Raw 10-K/10-Q Filing]) --> Extract[Extract Text from HTML/XML]
-    Extract --> Chunk[Chunk Document<br/>RecursiveCharacterTextSplitter<br/>2000 tokens/chunk]
-    Chunk --> Embed1[Generate Embeddings<br/>Sentence Transformers]
+    Start([Start: Raw 10-K/10-Q Filing<br/>1993-2024 Dataset]) --> Extract[Extract Text from HTML/XML<br/>Kabe: filing_extractor.py]
+    Extract --> Chunk[Chunk Document<br/>500 tokens core + 100 context<br/>Kabe: text_processor.py]
+    Chunk --> Embed1[Generate Embeddings<br/>all-MiniLM-L6-v2 384 dims<br/>Kabe: embedding_generator.py]
 
-    Embed1 --> GlobalCluster[Global Clustering<br/>UMAP + GMM]
-    GlobalCluster --> LocalCluster[Local Clustering<br/>Refine within each cluster]
+    Embed1 --> GlobalCluster[Global Clustering<br/>UMAP + GMM<br/>Kabe + Betsy: RAPTOR phase 1]
+    GlobalCluster --> LocalCluster[Local Clustering<br/>Refine within each cluster<br/>Betsy: RAPTOR refinement]
 
-    LocalCluster --> Summarize1[Level 1 Summarization<br/>Cluster summaries]
-    Summarize1 --> Embed2[Embed Level 1 Summaries]
+    LocalCluster --> Summarize1[Level 1 Summarization<br/>Ollama FinGPT-v3<br/>Betsy: Cluster summaries]
+    Summarize1 --> Embed2[Embed Level 1 Summaries<br/>Same embedding model]
 
-    Embed2 --> Cluster2[Level 2 Clustering<br/>UMAP + GMM]
-    Cluster2 --> Summarize2[Level 2 Summarization<br/>Summary of summaries]
+    Embed2 --> Cluster2[Level 2 Clustering<br/>UMAP + GMM<br/>Betsy: Higher abstraction]
+    Cluster2 --> Summarize2[Level 2 Summarization<br/>Ollama FinGPT-v3<br/>Betsy: Summary of summaries]
 
     Summarize2 --> Embed3[Embed Level 2 Summaries]
-    Embed3 --> Cluster3[Level 3 Clustering<br/>UMAP + GMM]
-    Cluster3 --> Summarize3[Level 3 Summarization<br/>Highest abstraction]
+    Embed3 --> Cluster3[Level 3 Clustering<br/>UMAP + GMM<br/>Betsy: Highest level]
+    Cluster3 --> Summarize3[Level 3 Summarization<br/>Ollama FinGPT-v3<br/>Betsy: Final abstraction]
 
-    Summarize3 --> Combine[Combine All Levels<br/>Original chunks + L1/L2/L3 summaries]
-    Combine --> Store[Store in Knowledge Base<br/>ChromaDB]
-    Store --> End([Knowledge Base Ready])
+    Summarize3 --> Combine[Combine All Levels<br/>Original chunks + L1/L2/L3 summaries<br/>Total: ~40M chunks + summaries]
+    Combine --> Store[Store in Knowledge Base<br/>ChromaDB on AWS EC2<br/>Betsy: Production deployment]
+    Store --> End([Knowledge Base Ready<br/>Access via Open WebUI])
 
     style GlobalCluster fill:#ffeb3b,stroke:#fbc02d,stroke-width:2px
     style LocalCluster fill:#ffeb3b,stroke:#fbc02d,stroke-width:2px
