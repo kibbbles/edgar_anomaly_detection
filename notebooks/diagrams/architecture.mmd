@@ -5,19 +5,16 @@ graph TB
     end
 
     subgraph "AWS EC2: secai Instance (35.175.134.36)"
-        subgraph "Kabe: Processing & Embedding"
+        subgraph "Data Processing Pipeline"
             C[Filing Extractor]
             D[Text Processor<br/>500-token chunks<br/>Contextual chunking]
             F[Embedding Generator<br/>all-MiniLM-L6-v2<br/>384 dims]
         end
 
-        subgraph "Betsy: RAPTOR & Deployment"
+        subgraph "RAPTOR & LLM Stack"
             E[RAPTOR System<br/>Clustering + Summarization]
             H[Ollama LLM<br/>FinGPT-v3]
-            I[Open WebUI<br/>Port 3000<br/>Docker]
-        end
-
-        subgraph "Shared"
+            I[Open WebUI<br/>Port 8080<br/>Docker]
             G[Knowledge Base<br/>ChromaDB]
         end
     end

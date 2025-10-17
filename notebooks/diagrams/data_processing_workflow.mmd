@@ -1,15 +1,15 @@
 sequenceDiagram
-    participant Kabe as Kabe<br/>(Processing Lead)
+    participant User as Data Pipeline
     participant FileSystem as AWS EC2 File System<br/>/app/data/edgar/
-    participant Extractor as Filing Extractor<br/>(Kabe)
-    participant Parser as Text Processor<br/>500-tok chunks (Kabe)
-    participant Embedder as Embedding Generator<br/>all-MiniLM-L6-v2 (Kabe)
-    participant RAPTOR as RAPTOR Engine<br/>(Kabe + Betsy)
-    participant Ollama as Ollama FinGPT-v3<br/>(Betsy)
-    participant KB as Knowledge Base<br/>ChromaDB (Betsy)
+    participant Extractor as Filing Extractor
+    participant Parser as Text Processor<br/>500-tok chunks
+    participant Embedder as Embedding Generator<br/>all-MiniLM-L6-v2
+    participant RAPTOR as RAPTOR Engine
+    participant Ollama as Ollama FinGPT-v3
+    participant KB as Knowledge Base<br/>ChromaDB
     participant Storage as /app/data/<br/>processed/ & embeddings/
 
-    Kabe->>FileSystem: Upload 1993-2024 ZIP files<br/>(51GB total)
+    User->>FileSystem: Upload 1993-2024 ZIP files<br/>(51GB total)
     FileSystem->>Extractor: Read 10-X_C_YYYY.zip archives
     Extractor->>Extractor: Unzip and extract filings<br/>(~300K total filings)
     Extractor->>Parser: Send raw HTML/XML
@@ -25,9 +25,9 @@ sequenceDiagram
 
     Embedder->>RAPTOR: Send chunks + embeddings
 
-    RAPTOR->>RAPTOR: Global clustering (UMAP + GMM)<br/>(Kabe implements)
+    RAPTOR->>RAPTOR: Global clustering (UMAP + GMM)
     RAPTOR->>RAPTOR: Local clustering refinement
-    RAPTOR->>Ollama: Request Level 1 summaries<br/>(Betsy: Ollama integration)
+    RAPTOR->>Ollama: Request Level 1 summaries
     Ollama-->>RAPTOR: Return L1 summaries
     RAPTOR->>RAPTOR: Embed L1 summaries
     RAPTOR->>RAPTOR: Recursive clustering (L2)
@@ -41,7 +41,7 @@ sequenceDiagram
     RAPTOR->>KB: Store enhanced knowledge base<br/>(chunks + L1/L2/L3 summaries)
     KB->>Storage: Persist vector embeddings<br/>(~250GB total)
 
-    Storage-->>Kabe: Processing complete
+    Storage-->>User: Processing complete
     Storage-->>Ollama: Ready for queries
 
     Note over RAPTOR,KB: Knowledge base contains:<br/>- 40M original chunks<br/>- L1/L2/L3 summaries<br/>- Hierarchical structure<br/>- 31 years of SEC filings
