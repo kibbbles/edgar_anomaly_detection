@@ -6,15 +6,15 @@ flowchart TD
     Embed1 --> GlobalCluster[Global Clustering<br/>UMAP + GMM<br/>RAPTOR phase 1]
     GlobalCluster --> LocalCluster[Local Clustering<br/>Refine within each cluster<br/>RAPTOR refinement]
 
-    LocalCluster --> Summarize1[Level 1 Summarization<br/>Ollama FinGPT-v3<br/>Cluster summaries]
+    LocalCluster --> Summarize1[Level 1 Summarization<br/>Ollama llama3-sec<br/>Cluster summaries]
     Summarize1 --> Embed2[Embed Level 1 Summaries<br/>Same embedding model]
 
     Embed2 --> Cluster2[Level 2 Clustering<br/>UMAP + GMM<br/>Higher abstraction]
-    Cluster2 --> Summarize2[Level 2 Summarization<br/>Ollama FinGPT-v3<br/>Summary of summaries]
+    Cluster2 --> Summarize2[Level 2 Summarization<br/>Ollama llama3-sec<br/>Summary of summaries]
 
     Summarize2 --> Embed3[Embed Level 2 Summaries]
     Embed3 --> Cluster3[Level 3 Clustering<br/>UMAP + GMM<br/>Highest level]
-    Cluster3 --> Summarize3[Level 3 Summarization<br/>Ollama FinGPT-v3<br/>Final abstraction]
+    Cluster3 --> Summarize3[Level 3 Summarization<br/>Ollama llama3-sec<br/>Final abstraction]
 
     Summarize3 --> Combine[Combine All Levels<br/>Original chunks + L1/L2/L3 summaries<br/>Total: ~40M chunks + summaries]
     Combine --> Store[Store in Knowledge Base<br/>ChromaDB on AWS EC2<br/>Production deployment]
