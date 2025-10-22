@@ -1,52 +1,57 @@
 graph TB
     subgraph "Data Sources"
         A[SEC EDGAR Data<br/>1993-2024<br/>51GB Total]
-        B[Downloaded ZIP Files<br/>10-X_C_YYYY.zip<br/>10-K/10-Q Filings]
     end
 
-    subgraph "AWS EC2: secai Instance (35.175.134.36)"
-        subgraph "Data Processing Pipeline"
+    subgraph "AWS EC2 Instance: secai (g6.2xlarge)"
+        subgraph "EC2 Filesystem: /app/data/"
+            J[(edgar/<br/>Raw ZIPs + Extracted Filings)]
+            K[(processed/<br/>Chunks JSON)]
+            M[(embeddings/<br/>Vector NPY files)]
+        end
+
+        subgraph "Data Processing Pipeline (Python Scripts)"
             C[Filing Extractor]
             D[Text Processor<br/>500-token chunks<br/>Contextual chunking]
-            F[Embedding Generator<br/>all-MiniLM-L6-v2<br/>384 dims]
-        end
-
-        subgraph "RAPTOR & LLM Stack"
+            F[Embedding Generator<br/>all-MiniLM-L6-v2<br/>GPU-accelerated]
             E[RAPTOR System<br/>Clustering + Summarization]
-            H[Ollama LLM<br/>llama3-sec]
-            I[Open WebUI<br/>Port 8080<br/>Docker]
-            G[Knowledge Base<br/>ChromaDB]
         end
-    end
 
-    subgraph "Storage: /app/data/"
-        J[(edgar/<br/>Raw ZIPs + Unzipped)]
-        K[(processed/<br/>Chunks JSON)]
-        M[(embeddings/<br/>Vector NPY files)]
+        subgraph "Ollama (Installed on EC2)"
+            H[Ollama LLM Server<br/>llama3-sec<br/>FinGPT models]
+        end
+
+        subgraph "Docker Container: ChromaDB (Port 8000)"
+            G[ChromaDB<br/>Vector Database<br/>Chunks + Summaries]
+        end
+
+        subgraph "Docker Container: Open WebUI (Port 8080)"
+            I[Open WebUI<br/>Query Interface]
+        end
     end
 
     subgraph "Users"
-        L[End Users<br/>Team Access]
+        L[End Users<br/>Web Browser<br/>http://35.175.134.36:8080]
     end
 
-    A -->|Uploaded to EC2| B
-    B -->|Store in| J
-    J -->|Extract| C
-    C -->|Parse HTML/XML| D
-    D -->|Chunks + Metadata| K
-    D -->|Text chunks| F
-    F -->|Generate Embeddings| M
-    M -->|Embeddings + Chunks| E
-    E -->|Hierarchical Clustering<br/>3-Level Summarization| G
-    G -->|Store vectors| M
+    A -->|Upload via SCP/SFTP| J
+    J -->|Extract filings| C
+    C -->|Parse HTML/XML/SGML| D
+    D -->|Generate chunks| K
+    K -->|Load chunks| F
+    F -->|Generate embeddings| M
+    M -->|Load embeddings + chunks| E
+    E -->|Hierarchical clustering<br/>3-level summarization| G
 
-    L -->|Submit Query| I
-    I -->|Retrieve Context| G
-    G -->|Relevant Chunks<br/>+ Summaries| H
-    H -->|Generate Response| I
-    I -->|Display Results| L
+    L -->|Submit query| I
+    I -->|Query LLM| H
+    I -->|Retrieve context via :8000| G
+    G -->|Return relevant chunks<br/>+ summaries| I
+    H -->|Generate response| I
+    I -->|Display results| L
 
     style E fill:#ff9800,stroke:#f57c00,stroke-width:3px
     style H fill:#4caf50,stroke:#388e3c,stroke-width:2px
     style I fill:#2196f3,stroke:#1976d2,stroke-width:2px
-    style F fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px
+    style G fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px
+    style F fill:#ffeb3b,stroke:#fbc02d,stroke-width:2px
