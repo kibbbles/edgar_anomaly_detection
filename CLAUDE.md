@@ -52,7 +52,7 @@ AI-powered system analyzing complete SEC 10-K and 10-Q filings (1993-2024) using
 
 ### Data Layer (`src/data/`)
 - `filing_extractor.py` - Unzip archives, extract full 10-K/10-Q text from HTML/XML/SGML
-- `text_processor.py` - Clean text, chunk into 2000-token segments
+- `text_processor.py` - Clean text, chunk into 500-token segments with contextual chunking (100-token context prepended per chunk)
 
 ### Model Layer (`src/models/`)
 - `raptor.py` - RAPTOR class (adapted from FinGPT): hierarchical clustering, recursive summarization
@@ -109,6 +109,7 @@ AI-powered system analyzing complete SEC 10-K and 10-Q filings (1993-2024) using
 
 ### Processing Approach
 - Extract **entire filings** (not limited to specific sections)
+- **Contextual Chunking:** Each 500-token chunk gets a 100-token LLM-generated context summary prepended (explaining what the chunk contains in relation to the whole document)
 - RAPTOR clustering will naturally organize content by topic
 - Users can query any section or topic across all filings
 
@@ -141,7 +142,7 @@ AI-powered system analyzing complete SEC 10-K and 10-Q filings (1993-2024) using
 ### Phase 2: Data Processing Pipeline
 - [ ] Extract filings from ZIP archives (1993-2024)
 - [ ] Parse full 10-K/10-Q text (handle HTML/XML/SGML)
-- [ ] Chunk documents (2000 tokens/chunk)
+- [ ] Chunk documents (500 tokens/chunk + 100-token contextual summary prepended)
 - [ ] Generate embeddings
 - [ ] Store structured data (JSON/Parquet)
 

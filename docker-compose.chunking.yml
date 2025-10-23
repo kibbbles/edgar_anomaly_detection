@@ -1,0 +1,39 @@
+# Docker Compose configuration for SEC filing data processing
+# Usage: docker-compose -f docker-compose.chunking.yml run chunking
+
+version: '3.8'
+
+services:
+  # Data processing service (chunking, embedding, RAPTOR)
+  chunking:
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+    container_name: edgar_chunking
+    volumes:
+      # Mount data directories
+      - /app/data/edgar:/app/data/edgar:ro  # Read-only input
+      - /app/data/processed:/app/data/processed  # Write output
+      # Mount source code for development (optional - comment out for production)
+      - ./src:/app/src
+    environment:
+      - PYTHONUNBUFFERED=1
+      - CHUNK_SIZE=500
+      - CONTEXT_SIZE=100
+    # Override command for specific tasks
+    command: >
+      python -m src.data.text_processor
+      --input /app/data/edgar/extracted/2024/QTR1
+      --output /app/data/processed/2024/QTR1
+      --chunk-size 500
+    # Resource limits (optional - adjust based on EC2 capacity)
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+    # Restart policy
+    restart: "no"  # Don't auto-restart for batch jobs
