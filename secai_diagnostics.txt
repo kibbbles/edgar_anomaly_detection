@@ -1,0 +1,434 @@
+============================================================
+secAI Environment Structure Diagnostics (Local)
+Timestamp: 2025-10-23 10:32:52
+Working Directory: C:\Users\kabec\Documents\edgar_anomaly_detection
+============================================================
+
+============================================================
+1. SYSTEM INFORMATION
+============================================================
+Platform: Windows 11
+Machine: AMD64
+Processor: Intel64 Family 6 Model 191 Stepping 2, GenuineIntel
+Python Version: 3.12.7 (tags/v3.12.7:0b05ead, Oct  1 2024, 03:06:41) [MSC v.1941 64 bit (AMD64)]
+Hostname: Kabe
+
+Memory Info:
+TotalPhysicalMemory  
+
+34122473472
+
+Disk Usage:
+Total: 930 GB
+Used: 428 GB
+Free: 502 GB
+
+============================================================
+2. DOCKER CONTAINERS (Local)
+============================================================
+Docker Version: Docker version 28.3.0, build 38b7060
+
+Running Containers:
+Error: error during connect: Get "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.51/containers/json": open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+
+All Containers (including stopped):
+Error: error during connect: Get "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.51/containers/json?all=1": open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+
+Docker System Usage:
+Error: error during connect: Get "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.51/system/df": open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+
+============================================================
+3. DOCKER CONTAINER DETAILS
+============================================================
+Checking for ChromaDB container...
+No ChromaDB container found
+
+Checking for Open WebUI container...
+No Open WebUI container found
+
+============================================================
+4. OLLAMA INSTALLATION
+============================================================
+Ollama Version:
+ollama version is 0.12.5
+
+Ollama Models:
+NAME                          ID              SIZE      MODIFIED   
+llama3.1:8b                   46e0c10c039e    4.9 GB    6 days ago    
+arcee-ai/llama3-sec:latest    2bb04e77ac1d    49 GB     8 days ago    
+gpt-oss:120b-cloud            569662207105    -         9 days ago    
+gpt-oss:latest                17052f91a42e    13 GB     9 days ago    
+qwen2.5:1.5b                  65ec06548149    986 MB    9 days ago
+
+Ollama Process:
+ollama app.exe               27924 Console                    1     37,440 K
+ollama.exe                   33020 Console                    1     11,600 K
+
+Ollama Home Directory (C:\Users\kabec\.ollama):
+  id_ed25519: 0.00 GB
+  id_ed25519.pub: 0.00 GB
+  models: 64.87 GB
+
+============================================================
+5. LOCAL FILESYSTEM STRUCTURE
+============================================================
+Project Root: C:\Users\kabec\Documents\edgar_anomaly_detection
+
+data/: 64737.4 MB (8406 files)
+  Data structure:
+    external/: 51543.9 MB
+    processed/: 0.0 MB
+    raw/: 13193.6 MB
+    reports/: 0.0 MB
+
+notebooks/: 28130.5 MB (98 files)
+
+src/: 0.0 MB (7 files)
+
+.venv/: 2194.9 MB (49682 files)
+
+Root Directory Files:
+  .env: 0.1 KB
+  .env.example: 0.1 KB
+  .gitignore: 1.0 KB
+  10k_output.txt: 3.3 KB
+  8k_output.txt: 4.1 KB
+  AWS_EC2_SETUP_GUIDE.md: 11.3 KB
+  CLAUDE.md: 6.1 KB
+  COWORKER_HANDOFF.md: 4.8 KB
+  external_datasets_evaluation.xlsx: 6.9 KB
+  question5keyfinancials.png: 49.5 KB
+  README.md: 11.2 KB
+  requirements.txt: 0.3 KB
+  secai_diagnostics.txt: 0.0 KB
+  SECAI_DIAGNOSTICS_README.md: 3.4 KB
+  secai_environment_structure.py: 10.5 KB
+  ttb_cola_pilot_proposal.txt: 40.0 KB
+  weirdly_formmatted_intel.png: 14.0 KB
+  ~$external_datasets_evaluation.xlsx: 0.2 KB
+
+============================================================
+6. NETWORK & PORTS (Local)
+============================================================
+Checking listening ports...
+
+Listening TCP Ports:
+TCP    0.0.0.0:135            0.0.0.0:0              LISTENING
+  TCP    0.0.0.0:445            0.0.0.0:0              LISTENING
+  TCP    0.0.0.0:5040           0.0.0.0:0              LISTENING
+  TCP    0.0.0.0:7680           0.0.0.0:0              LISTENING
+  TCP    0.0.0.0:27036          0.0.0.0:0              LISTENING
+  TCP    0.0.0.0:49664          0.0.0.0:0              LISTENING
+  TCP    0.0.0.0:49665          0.0.0.0:0              LISTENING
+  TCP    0.0.0.0:49666          0.0.0.0:0              LISTENING
+  TCP    0.0.0.0:49667          0.0.0.0:0              LISTENING
+  TCP    0.0.0.0:49668          0.0.0.0:0              LISTENING
+  TCP    0.0.0.0:49671          0.0.0.0:0              LISTENING
+  TCP    0.0.0.0:54235          0.0.0.0:0              LISTENING
+  TCP    0.0.0.0:59869          0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:1337         0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:3644         0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:8680         0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:8888         0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:9009         0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:11434        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:13013        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:13016        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:13331        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:13344        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:14285        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:27060        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:48480        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:49670        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:49714        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:49715        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:54362        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:54396        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:54407        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:55637        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:56249        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:59428        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:60376        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:60377        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:60378        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:60379        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:60380        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:61178        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:61179        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:61180        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:61181        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:61182        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:61186        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:61187        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:61188        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:61189        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:61190        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:62747        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:64848        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:65173        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:65174        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:65175        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:65176        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:65177        0.0.0.0:0              LISTENING
+  TCP    127.0.0.1:65444        0.0.0.0:0              LISTENING
+  TCP    192.168.0.209:139      0.0.0.0:0              LISTENING
+  TCP    192.168.0.209:9009     0.0.0.0:0              LISTENING
+  TCP    [::]:135               [::]:0                 LISTENING
+  TCP    [::]:445               [::]:0                 LISTENING
+  TCP    [::]:7680              [::]:0                 LISTENING
+  TCP    [::]:49664             [::]:0                 LISTENING
+  TCP    [::]:49665             [::]:0                 LISTENING
+  TCP    [::]:49666             [::]:0                 LISTENING
+  TCP    [::]:49667             [::]:0                 LISTENING
+  TCP    [::]:49668             [::]:0                 LISTENING
+  TCP    [::]:49671             [::]:0                 LISTENING
+  TCP    [::]:54235             [::]:0                 LISTENING
+  TCP    [::1]:8888             [::]:0                 LISTENING
+  TCP    [::1]:42050            [::]:0                 LISTENING
+  TCP    [::1]:49669            [::]:0                 LISTENING
+
+Port 8000 (ChromaDB):
+Error: 
+
+Port 8080 (Open WebUI):
+Error: 
+
+Port 11434 (Ollama):
+TCP    127.0.0.1:11434        0.0.0.0:0              LISTENING
+
+============================================================
+7. PYTHON ENVIRONMENT
+============================================================
+Python Executable: C:\Users\kabec\Documents\edgar_anomaly_detection\.venv\Scripts\python.exe
+Python Version: 3.12.7 (tags/v3.12.7:0b05ead, Oct  1 2024, 03:06:41) [MSC v.1941 64 bit (AMD64)]
+Virtual Environment: C:\Users\kabec\Documents\edgar_anomaly_detection\.venv
+In Virtual Environment: True
+
+Installed Packages:
+Package                   Version
+------------------------- --------------
+anyio                     4.11.0
+argon2-cffi               25.1.0
+argon2-cffi-bindings      25.1.0
+arrow                     1.3.0
+asttokens                 3.0.0
+async-lru                 2.0.5
+attrs                     25.4.0
+babel                     2.17.0
+beautifulsoup4            4.14.2
+bleach                    6.2.0
+certifi                   2025.10.5
+cffi                      2.0.0
+charset-normalizer        3.4.3
+colorama                  0.4.6
+comm                      0.2.3
+contourpy                 1.3.3
+cycler                    0.12.1
+debugpy                   1.8.17
+decorator                 5.2.1
+defusedxml                0.7.1
+executing                 2.2.1
+fastjsonschema            2.21.2
+filelock                  3.20.0
+fonttools                 4.60.1
+fqdn                      1.5.1
+fsspec                    2025.9.0
+h11                       0.16.0
+httpcore                  1.0.9
+httpx                     0.28.1
+huggingface-hub           0.35.3
+idna                      3.10
+iniconfig                 2.1.0
+ipykernel                 6.30.1
+ipython                   9.6.0
+ipython_pygments_lexers   1.1.1
+ipywidgets                8.1.7
+isoduration               20.11.0
+jedi                      0.19.2
+Jinja2                    3.1.6
+joblib                    1.5.2
+json5                     0.12.1
+jsonpointer               3.0.0
+jsonschema                4.25.1
+jsonschema-specifications 2025.9.1
+jupyter                   1.1.1
+jupyter_client            8.6.3
+jupyter-console           6.6.3
+jupyter_core              5.8.1
+jupyter-events            0.12.0
+jupyter-lsp               2.3.0
+jupyter_server            2.17.0
+jupyter_server_terminals  0.5.3
+jupyterlab                4.4.9
+jupyterlab_pygments       0.3.0
+jupyterlab_server         2.27.3
+jupyterlab_widgets        3.0.15
+kiwisolver                1.4.9
+lark                      1.3.0
+MarkupSafe                3.0.3
+matplotlib                3.10.7
+matplotlib-inline         0.1.7
+mistune                   3.1.4
+mpmath                    1.3.0
+nbclient                  0.10.2
+nbconvert                 7.16.6
+nbformat                  5.10.4
+nest-asyncio              1.6.0
+networkx                  3.5
+notebook                  7.4.7
+notebook_shim             0.2.4
+numpy                     2.3.3
+packaging                 25.0
+pandas                    2.3.3
+pandocfilters             1.5.1
+parso                     0.8.5
+pillow                    11.3.0
+pip                       25.2
+platformdirs              4.5.0
+pluggy                    1.6.0
+prometheus_client         0.23.1
+prompt_toolkit            3.0.52
+psutil                    7.1.0
+pure_eval                 0.2.3
+pyarrow                   21.0.0
+pycparser                 2.23
+Pygments                  2.19.2
+pyparsing                 3.2.5
+pyrate-limiter            3.9.0
+pytest                    8.4.2
+python-dateutil           2.9.0.post0
+python-dotenv             1.1.1
+python-json-logger        4.0.0
+pytz                      2025.2
+pywin32                   311
+pywinpty                  3.0.2
+PyYAML                    6.0.3
+pyzmq                     27.1.0
+referencing               0.36.2
+regex                     2025.9.18
+requests                  2.32.5
+rfc3339-validator         0.1.4
+rfc3986-validator         0.1.1
+rfc3987-syntax            1.1.0
+rpds-py                   0.27.1
+safetensors               0.6.2
+scikit-learn              1.7.2
+scipy                     1.16.2
+seaborn                   0.13.2
+sec-edgar-downloader      5.0.3
+Send2Trash                1.8.3
+sentence-transformers     5.1.1
+setuptools                80.9.0
+six                       1.17.0
+sniffio                   1.3.1
+soupsieve                 2.8
+stack-data                0.6.3
+sympy                     1.14.0
+terminado                 0.18.1
+threadpoolctl             3.6.0
+tiktoken                  0.12.0
+tinycss2                  1.4.0
+tokenizers                0.22.1
+torch                     2.8.0
+tornado                   6.5.2
+tqdm                      4.67.1
+traitlets                 5.14.3
+transformers              4.57.0
+types-python-dateutil     2.9.0.20251008
+typing_extensions         4.15.0
+tzdata                    2025.2
+uri-template              1.3.0
+urllib3                   2.5.0
+wcwidth                   0.2.14
+webcolors                 24.11.1
+webencodings              0.5.1
+websocket-client          1.9.0
+widgetsnbextension        4.0.14
+
+requirements.txt exists
+Requirements count: 22 packages
+
+============================================================
+8. GIT REPOSITORY
+============================================================
+Git Version:
+git version 2.46.1.windows.1
+
+Git Status:
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   SECAI_DIAGNOSTICS_README.md
+	deleted:    secai_environment_structure.sh
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	data/
+	notebooks/evaluation_answers/alphabet_10k_2024_statement_of_operations
+	notebooks/evaluation_answers/amazon_10k_2024_statement_of_operations
+	notebooks/evaluation_answers/intel_10k_2024_statement_of_operations
+	notebooks/evaluation_answers/meta_10k_2024_statement_of_operations
+	notebooks/evaluation_answers/microsoft_10k_2024_statement_of_operation
+	notebooks/evaluation_answers/nvidia_10k_2024_statement_of_operations
+	secai_diagnostics.txt
+	secai_environment_structure.py
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+Current Branch:
+master
+
+Recent Commits (last 5):
+9b50bdd Add secAI EC2 instance diagnostic script and documentation
+c0fcf0f Capitalize AI in secAI instance name in architecture diagram
+f9b3433 Remove FinGPT model references from all diagrams
+eedfcf9 Update architecture diagram to reflect actual Docker deployment
+a2a38ab Move evaluation_questions notebook to evaluation_answers folder for better organization
+
+Remote URL:
+origin	https://github.com/kibbbles/edgar_anomaly_detection.git (fetch)
+origin	https://github.com/kibbbles/edgar_anomaly_detection.git (push)
+
+============================================================
+9. KEY PROJECT FILES
+============================================================
+[OK] README.md: 11.2 KB
+[OK] requirements.txt: 0.3 KB
+[OK] .gitignore: 1.0 KB
+[OK] CLAUDE.md: 6.1 KB
+[MISSING] docker-compose.yml
+[MISSING] docker-compose.dev.yml
+[MISSING] docker-compose.prod.yml
+
+============================================================
+10. JUPYTER NOTEBOOKS
+============================================================
+Total notebooks found: 18
+
+Notebooks:
+  notebooks\.ipynb_checkpoints\01_project_plan-checkpoint.ipynb: 16.2 KB
+  notebooks\.ipynb_checkpoints\02_data_collection-checkpoint.ipynb: 17.4 KB
+  notebooks\.ipynb_checkpoints\03_eda_findings-checkpoint.ipynb: 419.6 KB
+  notebooks\01_project_plan.ipynb: 21.9 KB
+  notebooks\02_data_collection.ipynb: 17.4 KB
+  notebooks\03_eda_findings.ipynb: 419.9 KB
+  notebooks\evaluation_answers\.ipynb_checkpoints\baseline_question_answers-checkpoint.ipynb: 11.6 KB
+  notebooks\evaluation_answers\baseline_question_answers.ipynb: 62.5 KB
+  notebooks\evaluation_answers\evaluation_questions.ipynb: 42.8 KB
+  notebooks\prototyping\.ipynb_checkpoints\01_prototype_plan-checkpoint.ipynb: 24.6 KB
+  notebooks\prototyping\.ipynb_checkpoints\01_text_processing-checkpoint.ipynb: 163.1 KB
+  notebooks\prototyping\.ipynb_checkpoints\02_text_processing-checkpoint.ipynb: 42.9 KB
+  notebooks\prototyping\01_prototype_plan.ipynb: 13.2 KB
+  notebooks\prototyping\02_text_processing.ipynb: 26.7 KB
+  notebooks\prototyping\03_embedding_generation.ipynb: 15.4 KB
+  notebooks\prototyping\archive_v1_multi_year\01_prototype_plan_multi_year.ipynb: 30.4 KB
+  notebooks\prototyping\archive_v1_multi_year\02_text_processing_multi_year.ipynb: 42.9 KB
+  notebooks\prototyping\resources.ipynb: 19.1 KB
+
+============================================================
+Diagnostics Complete
+Timestamp: 2025-10-23 10:33:08
+============================================================

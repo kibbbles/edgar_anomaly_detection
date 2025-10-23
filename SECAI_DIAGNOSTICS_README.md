@@ -1,8 +1,8 @@
-# secAI EC2 Instance Diagnostics
+# secAI Environment Diagnostics
 
 ## Quick Start
 
-### Activate Python Virtual Environment (Local)
+### Activate Python Virtual Environment
 
 **On Windows:**
 ```bash
@@ -14,53 +14,35 @@
 source .venv/bin/activate
 ```
 
-**On EC2 (if venv is set up there):**
-```bash
-source /app/.venv/bin/activate
-# Or wherever the venv is located
-```
-
 ---
 
-## Running Diagnostics on secAI EC2 Instance
+## Running Diagnostics Locally
 
-### 1. Connect to the EC2 Instance
+### 1. Run the Python Diagnostic Script
 ```bash
-ssh -i /path/to/your-key.pem ubuntu@35.175.134.36
-```
-
-### 2. Upload the Diagnostic Script
-From your local machine:
-```bash
-scp -i /path/to/your-key.pem secai_environment_structure.sh ubuntu@35.175.134.36:~/
-```
-
-Or, if already connected to EC2, create it directly:
-```bash
-nano secai_environment_structure.sh
-# Paste the script content, then Ctrl+X, Y, Enter
-```
-
-### 3. Run the Diagnostic Script
-```bash
-# Make it executable
-chmod +x secai_environment_structure.sh
+# Make sure you're in the project directory
+cd edgar_anomaly_detection
 
 # Run and save output to file
-bash secai_environment_structure.sh > secai_diagnostics.txt
+python secai_environment_structure.py > secai_diagnostics.txt
 
 # View the output
 cat secai_diagnostics.txt
 
-# Or view with pagination
-less secai_diagnostics.txt
+# Or on Windows
+type secai_diagnostics.txt
 ```
 
-### 4. Download the Diagnostics File
-From your local machine:
-```bash
-scp -i /path/to/your-key.pem ubuntu@35.175.134.36:~/secai_diagnostics.txt .
-```
+### 2. Review the Output
+The script checks your local development environment and saves a complete report including:
+- System information
+- Docker containers (if running locally)
+- Ollama installation and models
+- Project directory structure
+- Network ports
+- Python environment
+- Git repository status
+- Project files and notebooks
 
 ---
 
