@@ -3,7 +3,7 @@ graph TB
         A[SEC EDGAR Data<br/>1993-2024<br/>51GB Total]
     end
 
-    subgraph "AWS EC2 Instance: secai (g6.2xlarge)"
+    subgraph "AWS EC2 Instance: secAI (g6.2xlarge)"
         subgraph "EC2 Filesystem: /app/data/"
             J[(edgar/<br/>Raw ZIPs + Extracted Filings)]
             K[(processed/<br/>Chunks JSON)]
