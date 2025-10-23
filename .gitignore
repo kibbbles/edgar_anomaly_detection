@@ -60,6 +60,10 @@ logs/
 # Temporary output files
 *_output.txt
 
+# Diagnostic files
+secai_diagnostics.txt
+*_diagnostics.txt
+
 # Proprietary/sensitive documents
 ttb_cola_pilot_proposal.txt
 scraping_sec_filings_part1.txt
