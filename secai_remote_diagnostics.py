@@ -9,8 +9,8 @@ from datetime import datetime
 
 # EC2 instance details
 EC2_HOST = "35.175.134.36"
-EC2_USER = "ubuntu"
-SSH_KEY = None  # Set this if you have a specific key path, e.g., "~/.ssh/secai.pem"
+EC2_USER = "kabe"
+SSH_KEY = r"C:\Users\kabec\.ssh\sec_ai_key"  # SSH key path
 
 def run_ssh_command(command):
     """Run a command on EC2 via SSH."""
