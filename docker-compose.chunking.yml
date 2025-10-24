@@ -10,6 +10,7 @@ services:
       context: .
       dockerfile: src/Dockerfile
     container_name: edgar_chunking
+    network_mode: host  # Allow access to Ollama on localhost:11434
     volumes:
       # Mount data directories
       - /app/data/edgar:/app/data/edgar:ro  # Read-only input
