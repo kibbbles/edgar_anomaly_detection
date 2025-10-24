@@ -150,12 +150,13 @@ class TextProcessor:
 
         return content
 
-    def chunk_text(self, text: str) -> List[TextChunk]:
+    def chunk_text(self, text: str, overlap_pct: float = 0.15) -> List[TextChunk]:
         """
-        Chunk text into ~500 token segments.
+        Chunk text into ~500 token segments with 15% overlap (NVIDIA method).
 
         Args:
             text: Full filing text
+            overlap_pct: Overlap percentage (default: 0.15 = 15%)
 
         Returns:
             List of TextChunk objects
@@ -164,11 +165,15 @@ class TextProcessor:
         tokens = self.encoding.encode(text)
         chunks = []
 
+        # Calculate overlap size (15% of chunk_size = 75 tokens for 500-token chunks)
+        overlap_size = int(self.chunk_size * overlap_pct)
+        step_size = self.chunk_size - overlap_size
+
         chunk_id = 0
         current_pos = 0
 
         while current_pos < len(tokens):
-            # Extract chunk tokens
+            # Extract chunk tokens (500 tokens)
             chunk_tokens = tokens[current_pos:current_pos + self.chunk_size]
 
             # Decode back to text
@@ -184,11 +189,12 @@ class TextProcessor:
                 token_count=len(chunk_tokens),
                 char_start=char_start,
                 char_end=char_end,
-                context_summary=None  # Generated later by LLM
+                context_summary=None  # Not used for overlap method
             ))
 
             chunk_id += 1
-            current_pos += self.chunk_size
+            # Move forward by step_size (425 tokens) to create 15% overlap
+            current_pos += step_size
 
         return chunks
 
