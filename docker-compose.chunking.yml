@@ -23,8 +23,8 @@ services:
     # Override command for specific tasks
     command: >
       python -m src.data.text_processor
-      --input /app/data/edgar/extracted/2024/QTR1
-      --output /app/data/processed/2024/QTR1
+      --input /app/data/edgar/extracted/2024/QTR4
+      --output /app/data/processed/2024/QTR4
       --chunk-size 500
     # Resource limits (optional - adjust based on EC2 capacity)
     deploy:
