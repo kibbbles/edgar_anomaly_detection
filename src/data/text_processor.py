@@ -197,7 +197,7 @@ class TextProcessor:
         chunk: TextChunk,
         metadata: FilingMetadata,
         ollama_host: str = "http://localhost:11434",
-        model: str = "qwen2.5:1.5b",
+        model: str = "llama3",
         max_retries: int = 3
     ) -> str:
         """
