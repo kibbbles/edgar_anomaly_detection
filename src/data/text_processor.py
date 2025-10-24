@@ -20,6 +20,7 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass, asdict
 import tiktoken
 from tqdm import tqdm
+import requests
 
 
 @dataclass
@@ -195,37 +196,101 @@ class TextProcessor:
         self,
         chunk: TextChunk,
         metadata: FilingMetadata,
-        ollama_host: str = "http://localhost:11434"
+        ollama_host: str = "http://localhost:11434",
+        model: str = "qwen2.5:1.5b",
+        max_retries: int = 3
     ) -> str:
         """
-        Generate 100-token contextual summary for a chunk using LLM.
+        Generate 50-100 token contextual summary for a chunk using LLM.
 
-        This summary explains what the chunk contains in relation to the whole document.
+        This implements Anthropic's contextual retrieval method: generate a brief
+        summary explaining what the chunk discusses in relation to the whole document.
 
         Args:
             chunk: TextChunk to summarize
             metadata: Filing metadata for context
             ollama_host: Ollama API endpoint
+            model: Ollama model name (qwen2.5:1.5b or llama3)
+            max_retries: Maximum retry attempts on failure
 
         Returns:
-            100-token context summary
-        """
-        # NOTE: This method requires Ollama running
-        # For now, return a placeholder - this will be implemented when we run on EC2
-        # with Ollama available
+            50-100 token context summary
 
-        context_template = (
+        Example:
+            Input chunk: "The company's revenue grew by 3% over the previous quarter"
+            Output context: "This chunk is from ACME Corp's Q2 2023 10-Q filing discussing
+                           quarterly revenue performance. Previous quarter revenue was $314M."
+        """
+        # Construct prompt following Anthropic's method
+        prompt = f"""<document>
+Company: {metadata.company_name}
+Filing Type: {metadata.form_type}
+Filing Date: {metadata.filing_date}
+CIK: {metadata.cik}
+</document>
+
+Provide a brief, factual summary (50-100 tokens) explaining what this chunk discusses in relation to the full {metadata.form_type} filing. Focus on the specific topic, metrics, or section covered.
+
+<chunk>
+{chunk.text[:1000]}
+</chunk>"""
+
+        # Call Ollama API with retries
+        for attempt in range(max_retries):
+            try:
+                response = requests.post(
+                    f"{ollama_host}/api/generate",
+                    json={
+                        "model": model,
+                        "prompt": prompt,
+                        "stream": False,
+                        "options": {
+                            "temperature": 0.3,  # Lower temperature for factual summaries
+                            "num_predict": 100,  # Limit output to ~100 tokens
+                        }
+                    },
+                    timeout=30
+                )
+
+                if response.status_code == 200:
+                    result = response.json()
+                    context = result.get('response', '').strip()
+
+                    # Fallback if LLM returns empty
+                    if not context:
+                        return self._fallback_context(chunk, metadata)
+
+                    return context
+
+                else:
+                    print(f"[WARN] Ollama API error (attempt {attempt + 1}/{max_retries}): {response.status_code}")
+
+            except requests.exceptions.RequestException as e:
+                print(f"[WARN] Ollama request failed (attempt {attempt + 1}/{max_retries}): {e}")
+
+            except Exception as e:
+                print(f"[ERROR] Unexpected error generating context: {e}")
+
+        # All retries failed - use fallback
+        print(f"[WARN] All LLM retries failed for chunk {chunk.chunk_id}, using fallback context")
+        return self._fallback_context(chunk, metadata)
+
+    def _fallback_context(self, chunk: TextChunk, metadata: FilingMetadata) -> str:
+        """
+        Generate fallback context when LLM is unavailable.
+
+        Args:
+            chunk: TextChunk
+            metadata: Filing metadata
+
+        Returns:
+            Template-based context string
+        """
+        return (
             f"This is chunk {chunk.chunk_id} from {metadata.company_name}'s "
             f"{metadata.form_type} filing dated {metadata.filing_date}. "
-            f"The chunk contains approximately {chunk.token_count} tokens discussing "
-            f"[topic to be identified by LLM]."
+            f"Contains {chunk.token_count} tokens of filing content."
         )
-
-        # TODO: Implement actual LLM call to Ollama
-        # prompt = f"Summarize what this chunk discusses in relation to the full {metadata.form_type} filing (100 tokens max):\n\n{chunk.text[:500]}"
-        # response = requests.post(f"{ollama_host}/api/generate", json={"model": "llama3-sec", "prompt": prompt})
-
-        return context_template
 
     def process_file(
         self,

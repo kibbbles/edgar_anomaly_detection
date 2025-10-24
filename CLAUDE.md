@@ -81,21 +81,31 @@ AI-powered system analyzing complete SEC 10-K and 10-Q filings (1993-2024) using
 ## Technical Stack
 
 ### Core Technologies
-- **Python 3.10+**
-- **LLM Model:** FinGPT-v3 (Llama2-based, via Ollama)
+- **Python 3.12** (inside Docker containers)
+- **LLM Model:** qwen2.5:1.5b or llama3 (via Ollama, for contextual summary generation)
 - **RAPTOR:** Adapted from FinGPT's `FinancialReportAnalysis/utils/rag.py`
-- **Embeddings:** Sentence Transformers (`all-MiniLM-L6-v2`)
+- **Embeddings:** Sentence Transformers (`multi-qa-mpnet-base-dot-v1`, 768-dim)
 - **Clustering:** UMAP + scikit-learn GMM
 - **Vector Store:** ChromaDB
 - **UI:** Open WebUI
+- **Containerization:** Docker (all processing happens inside containers)
+
+### Deployment Strategy
+- **ALL packages and dependencies MUST be installed inside Docker containers**
+- **NO manual pip installs on EC2 host** - keep the host clean
+- **Reuse existing Docker image** (`edgar-chunking`) when possible
+- Add new dependencies to `requirements.txt` → rebuild image → deploy
 
 ### Libraries
 - `langchain`, `langchain_community` - LLM orchestration
-- `sentence-transformers` - Local embeddings
+- `sentence-transformers` - 768-dim embeddings (multi-qa-mpnet-base-dot-v1)
 - `umap-learn` - Dimensionality reduction
 - `scikit-learn` - Clustering algorithms
 - `pandas`, `numpy` - Data manipulation
-- `ollama` - LLM serving
+- `ollama` - LLM client for contextual summary generation
+- `tiktoken` - Token counting for chunking
+- `tqdm` - Progress bars
+- `pyarrow` - Parquet file format support
 
 ---
 
@@ -109,7 +119,12 @@ AI-powered system analyzing complete SEC 10-K and 10-Q filings (1993-2024) using
 
 ### Processing Approach
 - Extract **entire filings** (not limited to specific sections)
-- **Contextual Chunking:** Each 500-token chunk gets a 100-token LLM-generated context summary prepended (explaining what the chunk contains in relation to the whole document)
+- **Contextual Chunking (Anthropic's Method):**
+  - Core chunk: 500 tokens (stored for retrieval)
+  - LLM-generated context: 50-100 tokens explaining chunk's role in document
+  - Contextualized chunk: [context] + [core chunk] (embedded for search)
+  - LLM: qwen2.5:1.5b via Ollama (fast, efficient)
+  - Expected improvement: 35-49% better retrieval accuracy
 - RAPTOR clustering will naturally organize content by topic
 - Users can query any section or topic across all filings
 
