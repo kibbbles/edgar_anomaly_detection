@@ -1,7 +1,7 @@
 flowchart TD
     Start([Start: Raw 10-K/10-Q Filing<br/>1993-2024 Dataset]) --> Extract[Extract Text from HTML/XML<br/>filing_extractor.py]
-    Extract --> Chunk[Chunk Document<br/>500 tokens core + 100 context<br/>text_processor.py]
-    Chunk --> Embed1[Generate Embeddings<br/>all-MiniLM-L6-v2 384 dims<br/>embedding_generator.py]
+    Extract --> Chunk[Chunk Document<br/>500 tokens + 15% overlap<br/>text_processor.py]
+    Chunk --> Embed1[Generate Embeddings<br/>multi-qa-mpnet-base-dot-v1 768 dims<br/>embedding_generator.py]
 
     Embed1 --> GlobalCluster[Global Clustering<br/>UMAP + GMM<br/>RAPTOR phase 1]
     GlobalCluster --> LocalCluster[Local Clustering<br/>Refine within each cluster<br/>RAPTOR refinement]
