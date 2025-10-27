@@ -15,6 +15,7 @@ services:
       # Mount data directories
       - /app/data/edgar:/app/data/edgar:ro  # Read-only input
       - /app/data/processed:/app/data/processed  # Write output
+      - /app/data/embeddings:/app/data/embeddings  # Embeddings output
       # Mount source code for development (optional - comment out for production)
       - ./src:/app/src
     environment:
