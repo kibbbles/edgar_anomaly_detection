@@ -1,0 +1,118 @@
+================================================================================
+RAG SYSTEM TEST RESULTS
+Test Embeddings: Tesla 10-K, Microsoft 10-Q, Apple 10-Q (286 chunks total)
+Date: 2025-10-28
+================================================================================
+
+TEST 1: Tesla Total Revenue (Easy Financial Data)
+================================================================================
+QUESTION: What was Tesla total revenue in fiscal year 2023?
+
+EXPECTED ANSWER: $96.8 billion
+
+RETRIEVAL RESULTS:
+  Top 5 Chunks Retrieved:
+  1. Similarity: 0.7052 - Tesla 10-K (revenue table)
+  2. Similarity: 0.6897 - Tesla 10-K (delivery discussion)
+  3. Similarity: 0.6743 - Tesla 10-K (cash flow discussion)
+  4. Similarity: 0.6696 - Tesla 10-K (regulatory text)
+  5. Similarity: 0.6690 - Tesla 10-K (audit documents)
+
+LLAMA-3 ANSWER:
+According to the provided context from SEC filings, specifically Chunk 1:
+
+"Total revenues 96,773 81,462 53,823 15,311 19 27,639 51"
+
+This indicates that Tesla's total revenue in fiscal year 2023 was $96,773.
+
+EVALUATION: PASS
+  - Retrieval: Excellent (0.7052 similarity on correct chunk)
+  - Accuracy: Correct ($96,773 million = $96.8 billion)
+  - LLM correctly identified and cited the number from financial table
+
+================================================================================
+
+TEST 2: Microsoft Business Segments (Easy Business Description)
+================================================================================
+QUESTION: What are Microsoft three reportable business segments?
+
+EXPECTED ANSWER: Productivity and Business Processes, Intelligent Cloud, and More Personal Computing
+
+RETRIEVAL RESULTS:
+  Top 5 Chunks Retrieved:
+  1. Similarity: 0.6958 - Microsoft 10-Q (segment description)
+  2. Similarity: 0.6817 - Microsoft 10-Q (gaming/cloud services)
+  3. Similarity: 0.6798 - Microsoft 10-Q (Office 365 metrics)
+  4. Similarity: 0.6719 - Microsoft 10-Q (operating income by segment)
+  5. Similarity: 0.6484 - Microsoft 10-Q (financial statements intro)
+
+LLAMA-3 ANSWER:
+According to the provided context from SEC filings, Microsoft's three reportable business segments are:
+
+1. Productivity and Business Processes
+2. Intelligent Cloud
+3. More Personal Computing
+
+These segments are mentioned in Chunk 4 of the filing, specifically in the "Reportable Segments" section.
+
+EVALUATION: PASS
+  - Retrieval: Good (0.6958 similarity on correct chunk)
+  - Accuracy: Perfect - all three segments correctly named
+  - LLM correctly extracted structured information from narrative text
+
+================================================================================
+
+TEST 3: Tesla Manufacturing Facilities (Medium Business Description)
+================================================================================
+QUESTION: Where are Tesla vehicle manufacturing facilities located?
+
+EXPECTED ANSWER: Fremont California, Gigafactory Texas, Gigafactory Shanghai, and Gigafactory Berlin-Brandenburg
+
+RETRIEVAL RESULTS:
+  Top 5 Chunks Retrieved:
+  1. Similarity: 0.6806 - Tesla 10-K (auto lease trust subsidiaries)
+  2. Similarity: 0.6691 - Tesla 10-K (insurance subsidiaries)
+  3. Similarity: 0.6637 - Tesla 10-K (sales/service subsidiaries in China)
+  4. Similarity: 0.6599 - Tesla 10-K (insurance business discussion)
+  5. Similarity: 0.6449 - Tesla 10-K (Spain/Switzerland subsidiaries)
+
+LLAMA-3 ANSWER:
+Based on the provided context from SEC filings, there is no mention of Tesla vehicle manufacturing facilities. The listed entities appear to be subsidiaries, affiliates, or other business units of Tesla, but do not specifically identify manufacturing facilities. Therefore, I cannot provide a specific answer citing any particular filing.
+
+EVALUATION: FAIL
+  - Retrieval: Poor (retrieved subsidiary lists instead of facility descriptions)
+  - Similarity: 0.6806 (moderate but wrong content type)
+  - LLM Response: Correctly acknowledged it couldn't find the information (no hallucination)
+  - Issue: Semantic search failed to find narrative content about facilities
+
+================================================================================
+
+SUMMARY
+================================================================================
+Tests Passed: 2/3 (67%)
+Tests Failed: 1/3 (33%)
+
+STRENGTHS:
+  - Excellent at retrieving financial data from tables (0.70+ similarity)
+  - Good at extracting structured business information
+  - LLM demonstrates honesty (won't hallucinate when info isn't found)
+  - Accurate answer generation when correct chunks are retrieved
+
+WEAKNESSES:
+  - Struggles with narrative/descriptive content vs structured data
+  - Query "manufacturing facilities" retrieved subsidiary names (wrong content type)
+  - Moderate similarity scores (0.60-0.70) sometimes retrieve tangential content
+
+INTERPRETATION:
+  The RAG system is working correctly for financial analysis use cases focused
+  on numerical data and structured information. The limitation with narrative
+  queries is expected behavior for pure semantic search without:
+    1. Hybrid search (combining keyword + semantic)
+    2. RAPTOR hierarchical summaries (not yet implemented)
+    3. Metadata filtering (by section type: financial vs narrative)
+
+RECOMMENDATION:
+  Current system is suitable for financial data queries. For better narrative
+  retrieval, implement RAPTOR's hierarchical summarization or add hybrid search.
+
+================================================================================

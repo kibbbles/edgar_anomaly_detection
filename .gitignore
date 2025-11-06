@@ -39,6 +39,9 @@ eda/
 notebooks/prototyping/output/
 notebooks/prototyping/archive_*/output/
 
+# Table extraction experiments (deprecated - using markdown conversion)
+notebooks/table_extraction/
+
 # Environment variables
 .env
 
